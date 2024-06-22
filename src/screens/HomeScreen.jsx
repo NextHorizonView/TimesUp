@@ -38,7 +38,7 @@ const HomeScreen = () => {
                         <Image source={require('../assets/profile.png')} className='w-12 h-50' />
                         <View className='justify-between'>
                             <Text className='text-white'>Yash Singh</Text>
-                            <Text>Student</Text>
+                            <Text className='text-white'>Student</Text>
                         </View>
                     </View>
                     <TouchableOpacity className='w-12'>
@@ -49,7 +49,7 @@ const HomeScreen = () => {
                 </View>
                 <TouchableOpacity>
                     <View className='bg-[#26252C] w-full h-24 rounded-2xl flex-row items-center justify-between px-4'>
-                        <Text className='text-lg'>Add Task</Text>
+                        <Text className='text-lg text-white'>Add Task</Text>
                         <View className='items-center justify-center w-10 h-10 bg-white rounded-full'>
                             <FontAwesomeIcon size={24} color='#26252C' icon={faAdd} />
                         </View>
@@ -59,7 +59,7 @@ const HomeScreen = () => {
             <View className='flex-1 rounded-t-3xl'>
                 <LinearGradient start={{ x: 0.5, y: 0.2 }} end={{ x: 0.5, y: 1 }} colors={['#4838AF', '#1E1A37']} className='flex-1 w-full pt-6 rounded-t-3xl'>
                     <View className='gap-2 p-6 mb-12'>
-                        <Text className='text-2xl font-bold'>Today's Task</Text>
+                        <Text className='text-2xl font-bold text-white'>Today's Task</Text>
                         <ScrollView>
                             <View className='pt-4'>
                                 {tasks.map((task, key) => <TodayTask name={task.name} description={task.description} priority={task.priority} key={key} />)}
