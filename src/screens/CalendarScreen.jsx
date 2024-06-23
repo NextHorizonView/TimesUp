@@ -90,6 +90,7 @@ const CalendarScreen = () => {
                             <FontAwesomeIcon icon={faCalendar} size={24} color='#ffffff' />
                         </TouchableOpacity>
                         <DatePicker
+                            mode="date"
                             modal
                             open={openDatePicker}
                             date={date}
