@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, Image, TouchableOpacity, ScrollView, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faBell } from '@fortawesome/free-regular-svg-icons'
@@ -17,8 +17,12 @@ const HomeScreen = () => {
     const [pendingTasks, setPendingTasks] = useState([]);
 
     useEffect(() => {
-        setPendingTasks(getTodaysTask(categories));
-    }, [categories])
+        const fetchTasks = async () => {
+            await getTodaysTask(categories).then(result => setPendingTasks(result))
+        };
+
+        fetchTasks();
+    }, [categories]);
 
     return (
         <View className='flex-1 bg-black'>
@@ -52,11 +56,21 @@ const HomeScreen = () => {
                     <View className='gap-2 p-6 mb-12'>
                         <Text className='text-2xl font-bold text-white'>Today's Task</Text>
                         {pendingTasks.length > 0 ?
-                            <ScrollView>
-                                <View className='pt-4'>
-                                    {pendingTasks && pendingTasks.map((task, key) => <TodayTask priority={task.priority} name={task.name} isDue={task.isDue} due={task.due} startTime={task.startTime} category={task.category} key={key} />)}
-                                </View>
-                            </ScrollView>
+                            <FlatList
+                                showsVerticalScrollIndicator={false}
+                                data={pendingTasks}
+                                renderItem={({ item }) => (
+                                    <TodayTask
+                                        priority={item.priority}
+                                        name={item.name}
+                                        isDue={item.isDue}
+                                        due={item.due}
+                                        startTime={item.startTime}
+                                        category={item.category}
+                                    />
+                                )}
+                                keyExtractor={(item, index) => index}
+                            />
                             :
                             <View className='items-center pt-20'>
                                 <LottieView style={{ width: 240, height: 240 }} autoPlay loop source={require('../assets/homeBg.json')} />

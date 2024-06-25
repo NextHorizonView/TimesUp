@@ -74,7 +74,7 @@ export const categorySlice = createSlice({
             const { categoryName, taskDate, taskDetails } = action.payload;
         },
         deleteTask: (state, action) => { },
-        onChangeTaskStatus: (state, action) => {
+        onChangeTaskStatus:  (state, action) => {
             const { category, startDate } = action.payload;
             completeTask(state, category, startDate);
         },

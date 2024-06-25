@@ -10,6 +10,7 @@ import { addNewTask } from '../store/category/categorySlice';
 import DatePicker from 'react-native-date-picker'
 import { format } from 'date-fns'
 import TaskDropdown from './TaskDropdown';
+import Toast from "react-native-toast-message"
 
 const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
     const [name, setName] = useState('');
@@ -30,7 +31,12 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
     }, [date])
 
     useEffect(() => {
-        // console.log(categories);
+        if (endDate < startDate) {
+            setEndDate(new Date(startDate.getTime() + 60 * 24 * 60000));
+        }
+    }, [startDate])
+
+    useEffect(() => {
         const temp = []
         for (let i = 0; i < categories?.categoriesList.length; i++) {
             temp.push({ name: categories.categoriesList[i], id: i });
@@ -38,8 +44,22 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
         setCategoriesDict(temp);
     }, [categories]);
 
+    useEffect(() => {
+        setStartDate(new Date());
+        setEndDate(new Date(new Date().getTime() + 5 * 60000));
+    }, [isModalOpen])
+
 
     const onSave = () => {
+        if (name.length == 0) {
+            Toast.show({
+                type: 'error',
+                text1: 'Please don\' keep task empty',
+                swipeable: true
+            })
+            return;
+        }
+        setIsModalOpen(false);
         const categoryName = categories.categoriesList[categoryIndex];
         const taskDate = format(startDate, 'MMMM d, yyyy');
         const taskDetails = {
@@ -49,21 +69,18 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
             isCompleted: false,
         }
         dispatch(addNewTask({ categoryName, taskDate, taskDetails }));
-        // console.log(categoryName);
-        // console.log(taskDate);
-        // console.log(taskDetails);
+        setName('');
     }
 
     const onClose = () => {
         setIsModalOpen(false);
         setName('');
-        setStartDate(new Date());
-        setEndDate(new Date(new Date().getTime() + 5 * 60000));
     }
 
     return (
         <View>
             <Modal isVisible={isModalOpen}>
+                <Toast />
                 <View className='bg-[#4837B1] px-6 py-8 rounded-3xl mx-2'>
                     <Text className='mb-2 text-white'>Task</Text>
                     <TaskTextBox value={name} setValue={setName} isMultiline={false} isLight={true} />
@@ -108,7 +125,7 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
                         onCancel={() => {
                             setOpenEndDate(false);
                         }}
-                        minimumDate={new Date(startDate).setMinutes(startDate.getMinutes + 5)}
+                        minimumDate={startDate}
                     />
 
                     <View className='flex-row justify-between mt-8'>

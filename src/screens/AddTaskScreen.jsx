@@ -103,7 +103,7 @@ const AddTaskScreen = () => {
                             <View className='mt-2'>
                                 <View className=''>
                                     {category.tasks?.map((task, key) =>
-                                        <TaskListItem task={task} key={key} />
+                                        <TaskListItem handleChangeTaskStatus={handleChangeTaskStatus} task={task} key={key} />
                                     )}
                                 </View>
                             </View>
