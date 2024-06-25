@@ -1,60 +1,17 @@
-import { View, Text, Touchable, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, Touchable, TouchableOpacity, ScrollView, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAdd, faCalendar } from '@fortawesome/free-solid-svg-icons'
 import CalendarTask from '../components/CalendarTask'
 import DatePicker from 'react-native-date-picker'
-import { format, startOfWeek, endOfWeek, eachDayOfInterval } from 'date-fns'
+import { format, startOfWeek, endOfWeek, eachDayOfInterval, isDate } from 'date-fns'
+import { useSelector } from 'react-redux'
+import { getDateDetails } from '../utils/utils'
+import AddTaskModal from '../components/AddTaskModal'
+import LottieView from 'lottie-react-native'
 
 const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-const tasks = [
-    {
-        name: 'English Class Homework',
-        description: 'Complete Homework',
-        priority: 4,
-        numOfCompletedTask: 2,
-        goals: [
-            'Solve practice set',
-            'Sleep',
-        ]
-    },
-    {
-        name: 'Maths Class Homework',
-        description: 'Complete Math Homework',
-        priority: 3,
-        numOfCompletedTask: 2,
-        goals: [
-            'Solve practice set',
-            'Sleep',
-            'Eat'
-        ]
-    },
-    {
-        name: 'Science Class Homework',
-        description: 'Complete Homework',
-        priority: 1,
-        numOfCompletedTask: 2,
-        goals: [
-            'Solve practice set',
-            'Sleep',
-            'Gym'
-        ]
-    },
-    {
-        name: 'Geography Class Homework',
-        description: 'Complete Homework',
-        priority: 5,
-        numOfCompletedTask: 2,
-        goals: [
-            'Solve practice set',
-            'Sleep',
-            'Cycling',
-            'Exercise'
-        ]
-    },
-]
 
 const CalendarScreen = () => {
     const [date, setDate] = useState(new Date());
@@ -62,6 +19,9 @@ const CalendarScreen = () => {
     const [weekDates, setWeekDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [formattedDate, setFormattedDate] = useState(format(selectedDate, 'MMMM d, yyyy'));
+    const [tasksDetail, setTasksDetail] = useState([]);
+    const categories = useSelector(state => state.categories);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         updateWeekDates(date);
@@ -72,9 +32,13 @@ const CalendarScreen = () => {
         setFormattedDate(format(selectedDate, 'MMMM d, yyyy'))
     }, [selectedDate])
 
+    useEffect(() => {
+        setTasksDetail(getDateDetails(formattedDate, categories));
+    }, [formattedDate, categories]);
+
     const updateWeekDates = (selectedDate) => {
-        const start = startOfWeek(selectedDate, { weekStartsOn: 0 }); // Start of the week (Sunday)
-        const end = endOfWeek(selectedDate, { weekStartsOn: 0 }); // End of the week (Saturday)
+        const start = startOfWeek(selectedDate, { weekStartsOn: 0 });
+        const end = endOfWeek(selectedDate, { weekStartsOn: 0 });
         const dates = eachDayOfInterval({ start, end });
         setWeekDates(dates);
     };
@@ -119,12 +83,16 @@ const CalendarScreen = () => {
                     </View>
                 </View>
             </LinearGradient>
-            <ScrollView className='px-8 mt-6 mb-8' showsVerticalScrollIndicator={false} >
-                {tasks.map((task, key) => <TouchableOpacity key={key}>
-                    <CalendarTask goals={task.goals} name={task.name} numOfCompletedTask={task.numOfCompletedTask} />
-                </TouchableOpacity>)}
-            </ScrollView>
-            <TouchableOpacity className='mx-4 mb-3'>
+            <AddTaskModal date={selectedDate} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+            {tasksDetail.length > 0 ? <ScrollView className='px-8 mt-6 mb-24' showsVerticalScrollIndicator={false} >
+                {tasksDetail.map((task, key) => <View key={key}>
+                    <CalendarTask categoryDetail={task} />
+                </View>)}
+            </ScrollView> : <View className='items-center justify-center mt-20'>
+                <LottieView style={{ width: 240, height: 240 }} autoPlay loop source={require('../assets/calendarBg.json')} />
+                <Text className='mt-2 text-base font-bold text-white'>There are no tasks scheduled for this date.</Text>
+            </View>}
+            <TouchableOpacity onPress={() => setIsModalOpen(true)} className='absolute bottom-0 left-0 right-0 mx-4 mb-3'>
                 <View className='p-4 bg-[#26252C] rounded-xl flex-row justify-between items-center'>
                     <Text className='font-medium text-white'>Add Task</Text>
                     <View className='items-center justify-center p-2 bg-white rounded-full'>

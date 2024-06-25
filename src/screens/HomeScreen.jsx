@@ -1,35 +1,25 @@
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faBell } from '@fortawesome/free-regular-svg-icons'
 import { faAdd } from '@fortawesome/free-solid-svg-icons'
 import LinearGradient from 'react-native-linear-gradient'
 import TodayTask from '../components/TodayTask'
-
-const tasks = [
-    {
-        name: 'English Class Homework',
-        description: 'Complete Homework',
-        priority: 4
-    },
-    {
-        name: 'Maths Class Homework',
-        description: 'Complete Math Homework',
-        priority: 3
-    },
-    {
-        name: 'Science Class Homework',
-        description: 'Complete Homework',
-        priority: 1
-    },
-    {
-        name: 'Geography Class Homework',
-        description: 'Complete Homework',
-        priority: 5
-    },
-]
+import { useSelector } from 'react-redux'
+import { format } from 'date-fns'
+import AddTaskModal from '../components/AddTaskModal'
+import { getTodaysTask } from '../utils/utils'
+import LottieView from 'lottie-react-native'
 
 const HomeScreen = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const categories = useSelector(state => state.categories);
+    const [pendingTasks, setPendingTasks] = useState([]);
+
+    useEffect(() => {
+        setPendingTasks(getTodaysTask(categories));
+    }, [categories])
+
     return (
         <View className='flex-1 bg-black'>
             <View className='gap-4 p-6'>
@@ -47,24 +37,31 @@ const HomeScreen = () => {
                         </View>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity>
-                    <View className='bg-[#26252C] w-full h-24 rounded-2xl flex-row items-center justify-between px-4'>
-                        <Text className='text-lg text-white'>Add Task</Text>
-                        <View className='items-center justify-center w-10 h-10 bg-white rounded-full'>
-                            <FontAwesomeIcon size={24} color='#26252C' icon={faAdd} />
+                <TouchableOpacity className='mx-4 mb-3' onPress={() => setIsModalOpen(true)}>
+                    <View className='p-4 bg-[#26252C] rounded-xl flex-row justify-between items-center'>
+                        <Text className='font-medium text-white'>Add Task</Text>
+                        <View className='items-center justify-center p-2 bg-white rounded-full'>
+                            <FontAwesomeIcon icon={faAdd} color='#26252C' />
                         </View>
                     </View>
                 </TouchableOpacity>
+                <AddTaskModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
             </View>
             <View className='flex-1 rounded-t-3xl'>
                 <LinearGradient start={{ x: 0.5, y: 0.2 }} end={{ x: 0.5, y: 1 }} colors={['#4838AF', '#1E1A37']} className='flex-1 w-full pt-6 rounded-t-3xl'>
                     <View className='gap-2 p-6 mb-12'>
                         <Text className='text-2xl font-bold text-white'>Today's Task</Text>
-                        <ScrollView>
-                            <View className='pt-4'>
-                                {tasks.map((task, key) => <TodayTask name={task.name} description={task.description} priority={task.priority} key={key} />)}
-                            </View>
-                        </ScrollView>
+                        {pendingTasks.length > 0 ?
+                            <ScrollView>
+                                <View className='pt-4'>
+                                    {pendingTasks && pendingTasks.map((task, key) => <TodayTask priority={task.priority} name={task.name} isDue={task.isDue} due={task.due} startTime={task.startTime} category={task.category} key={key} />)}
+                                </View>
+                            </ScrollView>
+                            :
+                            <View className='items-center pt-20'>
+                                <LottieView style={{ width: 240, height: 240 }} autoPlay loop source={require('../assets/homeBg.json')} />
+                                <Text className='mt-2 font-bold text-white'>You do not have any task scheduled for today</Text>
+                            </View>}
                     </View>
                 </LinearGradient>
             </View>
@@ -73,3 +70,7 @@ const HomeScreen = () => {
 }
 
 export default HomeScreen
+
+// isDue: Boolean
+// due: Date,
+// startTime,

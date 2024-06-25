@@ -1,54 +1,121 @@
-import { View, Text, Touchable, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import Modal from 'react-native-modal'
 import TaskTextBox from './TaskTextBox';
-import DatePicker from 'react-native-date-picker';
-import { format } from 'date-fns'
+import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faClockFour } from '@fortawesome/free-regular-svg-icons';
+import { faClock, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar as faStarReg } from '@fortawesome/free-regular-svg-icons';
+import { addNewTask } from '../store/category/categorySlice';
+import DatePicker from 'react-native-date-picker'
+import { format } from 'date-fns'
+import TaskDropdown from './TaskDropdown';
 
-const AddTaskModal = ({ isModalOpen, setIsModalOpen, task }) => {
-    const [name, setName] = useState(task.name);
-    const [description, setDescription] = useState(task.description);
-    const [date, setDate] = useState(new Date());
-    const [openDatePicker, setOpenDatePicker] = useState(false);
+const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
+    const [name, setName] = useState('');
+    const [startDate, setStartDate] = useState(date || new Date());
+    const [endDate, setEndDate] = useState(new Date(new Date().getTime() + 60 * 24 * 60000));
+    const [openStartDate, setOpenStartDate] = useState(false);
+    const [openEndDate, setOpenEndDate] = useState(false);
+    const [categoryIndex, setCategoryIndex] = useState(0);
+    const categories = useSelector(state => state.categories);
+    const [categoriesDict, setCategoriesDict] = useState([]);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (date) {
+            setStartDate(date);
+            setEndDate(new Date(date.getTime() + 60 * 24 * 60000));
+        }
+    }, [date])
+
+    useEffect(() => {
+        // console.log(categories);
+        const temp = []
+        for (let i = 0; i < categories?.categoriesList.length; i++) {
+            temp.push({ name: categories.categoriesList[i], id: i });
+        }
+        setCategoriesDict(temp);
+    }, [categories]);
+
+
+    const onSave = () => {
+        const categoryName = categories.categoriesList[categoryIndex];
+        const taskDate = format(startDate, 'MMMM d, yyyy');
+        const taskDetails = {
+            name,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+            isCompleted: false,
+        }
+        dispatch(addNewTask({ categoryName, taskDate, taskDetails }));
+        // console.log(categoryName);
+        // console.log(taskDate);
+        // console.log(taskDetails);
+    }
+
+    const onClose = () => {
+        setIsModalOpen(false);
+        setName('');
+        setStartDate(new Date());
+        setEndDate(new Date(new Date().getTime() + 5 * 60000));
+    }
 
     return (
-        <View className='rounded-xl'>
+        <View>
             <Modal isVisible={isModalOpen}>
-                <View className='bg-[#4837B1] px-6 py-8 rounded-xl mx-2'>
-                    <Text className='mb-2 text-white'>Name</Text>
+                <View className='bg-[#4837B1] px-6 py-8 rounded-3xl mx-2'>
+                    <Text className='mb-2 text-white'>Task</Text>
                     <TaskTextBox value={name} setValue={setName} isMultiline={false} isLight={true} />
 
-                    <Text className='mt-4 mb-2 text-white'>Description</Text>
-                    <TaskTextBox value={description} setValue={setDescription} isMultiline={true} isLight={true} />
+                    <Text className='mt-4 mb-2 text-white'>Task Category</Text>
+                    <TaskDropdown categories={categoriesDict} selectedCategory={categoryIndex} setCategoryIndex={setCategoryIndex} isLight={true} />
 
-                    <Text className='mt-4 mb-2 text-white'>Select date and time</Text>
-                    <TouchableOpacity onPress={() => setOpenDatePicker(true)}>
-                        <View className='flex-row items-center justify-between p-4 bg-white rounded-xl'>
-                            <Text className='text-black'>{format(date, 'MMMM d, yyyy')}</Text>
-                            <FontAwesomeIcon icon={faClockFour} />
-                        </View>
+                    <Text className='mt-4 mb-2 text-white'>Task Start Date</Text>
+                    <TouchableOpacity onPress={() => setOpenStartDate(true)} className='rounded min-w-[200] bg-white flex-row p-2 items-center justify-between'>
+                        <Text className='text-lg text-black'>{format(startDate, 'MMMM d, hh:mm')}</Text>
+                        <FontAwesomeIcon icon={faClock} size={24} color='black' />
+                    </TouchableOpacity>
+
+                    <Text className='mt-4 mb-2 text-white'>Task End Date</Text>
+                    <TouchableOpacity onPress={() => setOpenEndDate(true)} className='rounded min-w-[200] bg-white flex-row p-2 items-center justify-between'>
+                        <Text className='text-lg text-black'>{format(endDate, 'MMMM d, hh:mm')}</Text>
+                        <FontAwesomeIcon icon={faClock} size={24} color='black' />
                     </TouchableOpacity>
                     <DatePicker
                         mode="datetime"
                         modal
-                        open={openDatePicker}
-                        date={date}
+                        open={openStartDate}
+                        date={startDate}
                         onConfirm={(selectedDate) => {
-                            setOpenDatePicker(false);
-                            setDate(selectedDate);
+                            setStartDate(selectedDate);
+                            setOpenStartDate(false);
                         }}
                         onCancel={() => {
-                            setOpenDatePicker(false);
+                            setOpenStartDate(false);
                         }}
+                        minimumDate={new Date()}
+                    />
+                    <DatePicker
+                        mode="datetime"
+                        modal
+                        open={openEndDate}
+                        date={endDate}
+                        onConfirm={(selectedDate) => {
+                            setEndDate(selectedDate);
+                            setOpenEndDate(false);
+                        }}
+                        onCancel={() => {
+                            setOpenEndDate(false);
+                        }}
+                        minimumDate={new Date(startDate).setMinutes(startDate.getMinutes + 5)}
                     />
 
                     <View className='flex-row justify-between mt-8'>
-                        <TouchableOpacity onPress={() => setIsModalOpen(false)} className='items-center justify-center w-[48%] p-4 bg-white rounded-lg'>
+                        <TouchableOpacity onPress={onClose} className='items-center justify-center w-[48%] p-4 bg-white rounded-lg'>
                             <Text className='text-[#26252C]'>Close</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setIsModalOpen(false)} className='items-center justify-center w-[48%] p-4 bg-[#26252C] rounded-lg'>
+                        <TouchableOpacity onPress={onSave} className='items-center justify-center w-[48%] p-4 bg-[#26252C] rounded-lg'>
                             <Text className='text-white'>Save</Text>
                         </TouchableOpacity>
                     </View>
@@ -59,3 +126,11 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, task }) => {
 }
 
 export default AddTaskModal
+
+/**
+ * name
+ * description
+ * category
+ * start time
+ * end time
+ */
