@@ -4,12 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { format } from 'date-fns';
 
-const TodayTask = ({ name, category, priority, isDue, due, startTime }) => {
+const TodayTask = ({ name, category, priority, isDue, due, startTime, isCompleted }) => {
     const activeStars = new Array(priority).fill(0);
     const inActiveStars = new Array(5 - priority).fill(0);
 
     return (
-        <View className='p-2 my-4 gap-2 rounded-2xl min-h-[180] justify-between mx-2' style={{ backgroundColor: isDue ? '#BB6565' : '#7165BB' }}>
+        <View className='p-2 my-4 gap-2 rounded-2xl min-h-[180] justify-between mx-2' style={{ backgroundColor: isDue ? '#BB6565' : isCompleted ? '#65BB78' : '#7165BB' }}>
             <View>
                 <Text className='text-lg font-bold text-white'>{name}</Text>
                 <Text className='text-white'>{category}</Text>

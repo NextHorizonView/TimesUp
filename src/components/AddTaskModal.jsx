@@ -11,6 +11,8 @@ import DatePicker from 'react-native-date-picker'
 import { format } from 'date-fns'
 import TaskDropdown from './TaskDropdown';
 import Toast from "react-native-toast-message"
+import database from '../watermellon.config';
+import { useDatabase } from '../context/DatabaseContext';
 
 const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
     const [name, setName] = useState('');
@@ -18,10 +20,9 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
     const [endDate, setEndDate] = useState(new Date(new Date().getTime() + 60 * 24 * 60000));
     const [openStartDate, setOpenStartDate] = useState(false);
     const [openEndDate, setOpenEndDate] = useState(false);
-    const [categoryIndex, setCategoryIndex] = useState(0);
-    const categories = useSelector(state => state.categories);
-    const [categoriesDict, setCategoriesDict] = useState([]);
-    const dispatch = useDispatch();
+    const [categoryName, setCategoryName] = useState('');
+
+    const { addNewTask } = useDatabase();
 
     useEffect(() => {
         if (date) {
@@ -35,14 +36,6 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
             setEndDate(new Date(startDate.getTime() + 60 * 24 * 60000));
         }
     }, [startDate])
-
-    useEffect(() => {
-        const temp = []
-        for (let i = 0; i < categories?.categoriesList.length; i++) {
-            temp.push({ name: categories.categoriesList[i], id: i });
-        }
-        setCategoriesDict(temp);
-    }, [categories]);
 
     useEffect(() => {
         setStartDate(new Date());
@@ -60,16 +53,21 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
             return;
         }
         setIsModalOpen(false);
-        const categoryName = categories.categoriesList[categoryIndex];
-        const taskDate = format(startDate, 'MMMM d, yyyy');
         const taskDetails = {
             name,
             startDate: startDate.toISOString(),
             endDate: endDate.toISOString(),
             isCompleted: false,
         }
-        dispatch(addNewTask({ categoryName, taskDate, taskDetails }));
-        setName('');
+        addNewTask(name, startDate, endDate, categoryName).then(() => {
+            setName('');
+        }).catch(err => {
+            Toast.show({
+                type: 'error',
+                text1: err.message,
+                swipeable: true
+            })
+        });
     }
 
     const onClose = () => {
@@ -86,7 +84,7 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
                     <TaskTextBox value={name} setValue={setName} isMultiline={false} isLight={true} />
 
                     <Text className='mt-4 mb-2 text-white'>Task Category</Text>
-                    <TaskDropdown categories={categoriesDict} selectedCategory={categoryIndex} setCategoryIndex={setCategoryIndex} isLight={true} />
+                    <TaskDropdown setCategoryName={setCategoryName} isLight={true} />
 
                     <Text className='mt-4 mb-2 text-white'>Task Start Date</Text>
                     <TouchableOpacity onPress={() => setOpenStartDate(true)} className='rounded min-w-[200] bg-white flex-row p-2 items-center justify-between'>
@@ -142,7 +140,7 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
     )
 }
 
-export default AddTaskModal
+export default AddTaskModal;
 
 /**
  * name
@@ -151,3 +149,4 @@ export default AddTaskModal
  * start time
  * end time
  */
+

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAdd, faCalendar } from '@fortawesome/free-solid-svg-icons'
-import CalendarTask from '../components/CalendarTask'
+import CalendarTaskContainer from '../components/CalendarTaskContainer'
 import DatePicker from 'react-native-date-picker'
 import { format, startOfWeek, endOfWeek, eachDayOfInterval, isDate } from 'date-fns'
 import { useSelector } from 'react-redux'
@@ -19,10 +19,7 @@ const CalendarScreen = () => {
     const [weekDates, setWeekDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [formattedDate, setFormattedDate] = useState(format(selectedDate, 'MMMM d, yyyy'));
-    const [tasksDetail, setTasksDetail] = useState([]);
-    const categories = useSelector(state => state.categories);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
     useEffect(() => {
         updateWeekDates(date);
         setSelectedDate(date)
@@ -30,11 +27,8 @@ const CalendarScreen = () => {
 
     useEffect(() => {
         setFormattedDate(format(selectedDate, 'MMMM d, yyyy'))
+        // console.log(selectedDate);
     }, [selectedDate])
-
-    useEffect(() => {
-        setTasksDetail(getDateDetails(formattedDate, categories));
-    }, [formattedDate, categories]);
 
     const updateWeekDates = (selectedDate) => {
         const start = startOfWeek(selectedDate, { weekStartsOn: 0 });
@@ -84,14 +78,7 @@ const CalendarScreen = () => {
                 </View>
             </LinearGradient>
             <AddTaskModal date={selectedDate} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
-            {tasksDetail.length > 0 ? <ScrollView className='px-8 mt-6 mb-24' showsVerticalScrollIndicator={false} >
-                {tasksDetail.map((task, key) => <View key={key}>
-                    <CalendarTask categoryDetail={task} />
-                </View>)}
-            </ScrollView> : <View className='items-center justify-center mt-20'>
-                <LottieView style={{ width: 240, height: 240 }} autoPlay loop source={require('../assets/calendarBg.json')} />
-                <Text className='mt-2 text-base font-bold text-white'>There are no tasks scheduled for this date.</Text>
-            </View>}
+            <CalendarTaskContainer date={selectedDate} />
             <TouchableOpacity onPress={() => setIsModalOpen(true)} className='absolute bottom-0 left-0 right-0 mx-4 mb-3'>
                 <View className='p-4 bg-[#26252C] rounded-xl flex-row justify-between items-center'>
                     <Text className='font-medium text-white'>Add Task</Text>
@@ -104,4 +91,4 @@ const CalendarScreen = () => {
     )
 }
 
-export default CalendarScreen
+export default CalendarScreen;

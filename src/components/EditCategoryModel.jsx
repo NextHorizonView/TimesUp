@@ -6,15 +6,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faClose, faStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarReg } from '@fortawesome/free-regular-svg-icons';
-import { addNewCategory, editCategory, deleteCategory } from '../store/category/categorySlice';
+import { useDatabase } from '../context/DatabaseContext';
 
 const refStarArray = new Array(5).fill(0);
 
-const EditCategoryModel = ({ isModalOpen, setIsModalOpen, categoryDetails }) => {
+const EditCategoryModel = ({ isModalOpen, setIsModalOpen, categoryDetails, setCategoryName }) => {
+    const { editCategory, deleteCategory } = useDatabase()
     const [name, setName] = useState(categoryDetails.name);
     const [description, setDescription] = useState(categoryDetails.description);
     const [priority, setPriority] = useState(categoryDetails.priority);
-    const dispatch = useDispatch();
 
     useEffect(() => {
         setName(categoryDetails.name);
@@ -23,20 +23,14 @@ const EditCategoryModel = ({ isModalOpen, setIsModalOpen, categoryDetails }) => 
     }, [categoryDetails])
 
     const onSave = () => {
-        // dispatch(addNewCategory({ categoryName: name, categoryDetails: { description, priority } }))
-        dispatch(editCategory({ categoryName: categoryDetails.name, categoryDetails: { name, description, priority } }));
+        editCategory(name, description, priority, categoryDetails);
+        setCategoryName(name);
         setIsModalOpen(false);
-        setName('');
-        setDescription('');
-        setPriority(1);
     }
 
     const onDelete = () => {
-        dispatch(deleteCategory({ categoryName: categoryDetails.name }))
+        deleteCategory(categoryDetails);
         setIsModalOpen(false);
-        setName('');
-        setDescription('');
-        setPriority(1);
     }
 
     const onClose = () => {

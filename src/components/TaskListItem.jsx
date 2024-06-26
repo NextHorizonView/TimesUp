@@ -3,38 +3,45 @@ import React, { useState, useEffect, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import LottieView from 'lottie-react-native';
+import { withObservables } from '@nozbe/watermelondb/react';
+import database from '../watermellon.config';
 
-const TaskListItem = ({ task, handleChangeTaskStatus }) => {
-    const [shouldDisplay, setShouldDisplay] = useState(false); // Change this condition based on your logic
-    const animationRef = useRef(null);
+const TaskListItem = ({ task }) => {
+    const [tick, setTick] = useState(false);
+    const [isCompleted, setIsCompleted] = useState(task.isCompleted);
+    const tickAnimationRef = useRef(null);
+    const cancelAnimationRef = useRef(null);
 
     useEffect(() => {
-        if (shouldDisplay) {
-            animationRef.current?.play();
+        if (isCompleted) {
+            // cancelAnimationRef.current?.reset();
+            tickAnimationRef.current?.play();
         } else {
-            animationRef.current?.reset();
+            // tickAnimationRef.current?.reset();
+            cancelAnimationRef.current?.play();
         }
-    }, [shouldDisplay]);
+    }, [tick]);
 
     const onPress = () => {
-        setShouldDisplay(true);
-        handleChangeTaskStatus(task["startDate"]);
+        task.toggleCompletion();
+        setIsCompleted(!isCompleted);
     }
 
 
     return (
         <View className='bg-[#F2F2F2] p-2 my-2 rounded-xl'>
-            <View className='flex-row items-center'>
-                {shouldDisplay ?
+            <View className='flex-row items-center gap-4'>
+                {isCompleted ?
                     <TouchableOpacity onPress={onPress} className='items-center justify-center w-4 h-4 mr-3'>
-                        <LottieView loop={false} ref={animationRef} style={{ width: 24, height: 24 }} source={require('../assets/tickAnimation.json')} />
+                        <LottieView ref={tickAnimationRef} autoPlay={false} loop={false} source={require('../assets/tickAnimation.json')} style={{ width: 32, height: 32 }} />
                     </TouchableOpacity>
                     :
-                    <TouchableOpacity onPress={onPress} className='w-4 h-4 mr-3 border-[1px] border-[#D2D2D2]' />
+                    <TouchableOpacity onPress={onPress} className='items-center justify-center w-4 h-4 mr-3'>
+                        <LottieView ref={cancelAnimationRef} autoPlay={false} loop={false} source={require('../assets/cancelAnimation.json')} style={{ width: 32, height: 32 }} />
+                    </TouchableOpacity>
                 }
                 <View className='pr-8'>
-                    <Text className={task.isCompleted ? 'text-black/30' : 'text-black font-bold text-base'}>{task.name}</Text>
-                    <Text className={task.isCompleted ? 'text-black/30' : 'text-black'}>{task.description}</Text>
+                    <Text className={isCompleted ? 'text-black/30' : 'text-black font-bold text-base'}>{task.body}</Text>
                 </View>
             </View>
         </View>
@@ -42,3 +49,4 @@ const TaskListItem = ({ task, handleChangeTaskStatus }) => {
 }
 
 export default TaskListItem
+
