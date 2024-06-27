@@ -5,27 +5,34 @@ import { withObservables } from '@nozbe/watermelondb/react'
 import { Q } from '@nozbe/watermelondb'
 import database from '../watermellon.config'
 import { switchMap } from '@nozbe/watermelondb/utils/rx'
+import LottieView from 'lottie-react-native'
 
 const TodayTaskContainer = ({ tasks }) => {
     return (
         <View className='pt-2'>
-            <FlatList
-                contentContainerStyle={{ paddingTop: 10 }}
-                showsVerticalScrollIndicator={false}
-                data={tasks}
-                renderItem={({ item }) => (
-                    <TodayTask
-                        priority={item.priority}
-                        name={item.name}
-                        isDue={item.isDue}
-                        due={item.due}
-                        startTime={item.startTime}
-                        category={item.category}
-                        isCompleted={item.isCompleted}
-                    />
-                )}
-                keyExtractor={(item, index) => index}
-            />
+            {tasks && tasks.length > 0 ?
+                <FlatList
+                    contentContainerStyle={{ paddingTop: 10 }}
+                    showsVerticalScrollIndicator={false}
+                    data={tasks}
+                    renderItem={({ item }) => (
+                        <TodayTask
+                            priority={item.priority}
+                            name={item.name}
+                            isDue={item.isDue}
+                            due={item.due}
+                            startTime={item.startTime}
+                            category={item.category}
+                            isCompleted={item.isCompleted}
+                        />
+                    )}
+                    keyExtractor={(item, index) => index}
+                />
+                :
+                <View className='items-center mt-8'>
+                    <LottieView autoPlay loop style={{ width: 240, height: 240 }} source={require('../assets/todayNoTask.json')} />
+                </View>
+            }
         </View>
     )
 }

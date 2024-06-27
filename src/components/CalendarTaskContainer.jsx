@@ -1,28 +1,33 @@
 import { View, FlatList } from 'react-native'
 import React from 'react'
-
 import { withObservables } from '@nozbe/watermelondb/react'
 import database from '../watermellon.config'
 import { Q } from '@nozbe/watermelondb'
-import { switchMap } from '@nozbe/watermelondb/utils/rx'
 import CalendarTaskCard from './CalendarTaskCard';
+import LottieView from 'lottie-react-native'
 
 const CalendarTaskContainer = ({ categories, date }) => {
     return (
         <View className='flex-1 px-4 pt-2 mb-16'>
-            <FlatList
-                contentContainerStyle={{ paddingTop: 10 }}
-                showsVerticalScrollIndicator={false}
-                data={categories}
-                renderItem={({ item, index }) => (
-                    <CalendarTaskCard
-                        category={item}
-                        date={date}
-                        isLast={index == categories.length - 1}
-                    />
-                )}
-                keyExtractor={(item, index) => index}
-            />
+            {categories && categories.length > 0 ?
+                <FlatList
+                    contentContainerStyle={{ paddingTop: 10 }}
+                    showsVerticalScrollIndicator={false}
+                    data={categories}
+                    renderItem={({ item, index }) => (
+                        <CalendarTaskCard
+                            category={item}
+                            date={date}
+                            isLast={index == categories.length - 1}
+                        />
+                    )}
+                    keyExtractor={(item, index) => index}
+                />
+                :
+                <View className='items-center justify-center flex-1'>
+                    <LottieView autoPlay loop style={{ width: 240, height: 240 }} source={require('../assets/calendarBg.json')} />
+                </View>
+            }
         </View>
     )
 }

@@ -29,6 +29,7 @@ const AddTaskScreen = () => {
         }
         if (categoryName)
             fetchCategoryDetails();
+        console.log(categoryName);
     }, [categoryName])
 
     return (
@@ -36,9 +37,11 @@ const AddTaskScreen = () => {
             <View className='flex-1 mt-16 bg-[#4938B5] rounded-[78px] pt-4'>
                 <View className='bg-white rounded-t-[48px] flex-1 relative'>
                     <View className='flex-row justify-end m-4'>
-                        <TouchableOpacity onPress={() => onEditCurrentCategory(true)} className='bg-[#DBD7F2] rounded-full w-12 h-12 justify-center items-center'>
-                            <FontAwesomeIcon icon={faEdit} size={24} color='#230BAF' />
-                        </TouchableOpacity>
+                        {categoryName !== 'Miscellaneous' &&
+                            <TouchableOpacity onPress={() => onEditCurrentCategory(true)} className='bg-[#DBD7F2] rounded-full w-12 h-12 justify-center items-center'>
+                                <FontAwesomeIcon icon={faEdit} size={24} color='#230BAF' />
+                            </TouchableOpacity>
+                        }
                     </View>
 
                     <View className='flex-1 px-4'>
@@ -60,9 +63,6 @@ const AddTaskScreen = () => {
                             <Text className='text-base font-bold text-black'>Description: </Text>
                             <Text className='text-black/80'>{category?.description}</Text>
                         </View>
-
-
-                        <Text className='mt-4 text-base font-bold text-black'>Task: </Text>
 
                         <View className='flex-1'>
                             <TaskListByCategory categoryName={categoryName} />

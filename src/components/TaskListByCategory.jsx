@@ -4,6 +4,7 @@ import { withObservables } from '@nozbe/watermelondb/react';
 import database from '../watermellon.config';
 import { Q } from '@nozbe/watermelondb';
 import TaskListItem from './TaskListItem';
+import LottieView from 'lottie-react-native';
 
 const TaskListByCategory = ({ tasks }) => {
     const [taskList, setTaskList] = useState([]);
@@ -28,12 +29,22 @@ const TaskListByCategory = ({ tasks }) => {
 
     return (
         <View className=''>
-            <FlatList
-                data={taskList}
-                keyExtractor={task => task.id}
-                renderItem={({ item }) => <TaskListItem task={item} />}
-                showsVerticalScrollIndicator={false}
-            />
+            {tasks && tasks.length > 0 ?
+                <View>
+                    <Text className='mt-4 text-base font-bold text-black'>Task: </Text>
+                    <FlatList
+                        data={taskList}
+                        keyExtractor={task => task.id}
+                        renderItem={({ item }) => <TaskListItem task={item} />}
+                        showsVerticalScrollIndicator={false}
+                    />
+                </View>
+                :
+                <View className='items-center mt-8'>
+                    <LottieView autoPlay loop style={{ width: 240, height: 240 }} source={require('../assets/notask.json')} />
+                    <Text className='font-bold text-black'>You do not have any task to do</Text>
+                </View>
+            }
         </View>
     );
 };
