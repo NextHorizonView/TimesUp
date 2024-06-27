@@ -39,13 +39,13 @@ const CalendarTaskCard = ({ categoryDetails: { categoryName, numOfTaskLeft, tota
 
 const getStartOfDayLocal = (dateString) => {
     const date = new Date(dateString);
-    date.setHours(0, 0, 0, 0); // set to the start of the day in local time
+    date.setHours(0, 0, 0, 0);
     return date.getTime();
 };
 
 const getEndOfDayLocal = (dateString) => {
     const date = new Date(dateString);
-    date.setHours(23, 59, 59, 999); // set to the end of the day in local time
+    date.setHours(23, 59, 59, 999);
     return date.getTime();
 };
 
@@ -97,7 +97,3 @@ const enhance = withObservables(['category', 'date'], ({ category, date }) => {
 
 const EnhancedCalendar = enhance(CalendarTaskCard);
 export default EnhancedCalendar
-
-/*
-categoryName, numOfTaskLeft, totalTask, nextTaskDesc, nextTaskDate, nextTaskDueDate, isLast
-*/

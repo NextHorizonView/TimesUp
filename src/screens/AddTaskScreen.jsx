@@ -13,7 +13,6 @@ const stars = new Array(5).fill(0);
 const AddTaskScreen = () => {
     const [addCategoryModel, setAddCategoryModel] = useState(false);
     const [editCategoryModel, setEditCategoryModel] = useState(false);
-    const [addTaskModal, setAddTaskModal] = useState(false);
 
     const [categoryName, setCategoryName] = useState('');
     const [category, setCategory] = useState({});

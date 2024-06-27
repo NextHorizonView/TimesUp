@@ -1,10 +1,9 @@
-import { View, Text, FlatList } from 'react-native'
+import { View, FlatList } from 'react-native'
 import React from 'react'
 import TodayTask from './TodayTask'
 import { withObservables } from '@nozbe/watermelondb/react'
 import { Q } from '@nozbe/watermelondb'
 import database from '../watermellon.config'
-import { endOfDay, startOfDay, format } from 'date-fns'
 import { switchMap } from '@nozbe/watermelondb/utils/rx'
 
 const TodayTaskContainer = ({ tasks }) => {
@@ -34,13 +33,13 @@ const TodayTaskContainer = ({ tasks }) => {
 
 const getStartOfDayLocal = () => {
     const date = new Date();
-    date.setHours(0, 0, 0, 0); // set to the start of the day in local time
+    date.setHours(0, 0, 0, 0);
     return date.getTime();
 };
 
 const getEndOfDayLocal = () => {
     const date = new Date();
-    date.setHours(23, 59, 59, 999); // set to the end of the day in local time
+    date.setHours(23, 59, 59, 999);
     return date.getTime();
 };
 
@@ -80,32 +79,3 @@ const enhance = withObservables(['categoryName'], ({ categoryName }) => {
 const EnhancedTaskList = enhance(TodayTaskContainer);
 
 export default EnhancedTaskList;
-
-// all task of today
-// pending task of previous days
-
-
-/*
-{pendingTasks.length > 0 ?
-                            <FlatList
-                                showsVerticalScrollIndicator={false}
-                                data={pendingTasks}
-                                renderItem={({ item }) => (
-                                    <TodayTask
-                                        priority={item.priority}
-                                        name={item.name}
-                                        isDue={item.isDue}
-                                        due={item.due}
-                                        startTime={item.startTime}
-                                        category={item.category}
-                                    />
-                                )}
-                                keyExtractor={(item, index) => index}
-                            />
-                            :
-                            <View className='items-center pt-20'>
-                                <LottieView style={{ width: 240, height: 240 }} autoPlay loop source={require('../assets/homeBg.json')} />
-                                <Text className='mt-2 font-bold text-white'>You do not have any task scheduled for today</Text>
-                            </View>}
-
-*/

@@ -1,24 +1,39 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faBell } from '@fortawesome/free-regular-svg-icons'
 import { faAdd } from '@fortawesome/free-solid-svg-icons'
 import LinearGradient from 'react-native-linear-gradient'
 import AddTaskModal from '../components/AddTaskModal'
 import TodayTaskContainer from '../components/TodayTaskContainer'
+import { useDatabase } from '../context/DatabaseContext'
 
 const HomeScreen = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { getUserData } = useDatabase()
+    const [userData, setUserdata] = useState({})
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const user = await getUserData()
+            setUserdata(user)
+        }
+        fetchData();
+    }, [])
+
+    useEffect(() => {
+        console.log(userData.username);
+    }, [userData])
 
     return (
         <View className='flex-1 bg-black'>
             <View className='gap-4 p-6'>
                 <View className='flex flex-row justify-between mb-8'>
                     <View className='flex flex-row gap-4'>
-                        <Image source={require('../assets/profile.png')} className='w-12 h-50' />
+                        {userData.imageUri && <Image source={{ uri: userData.imageUri }} className='w-12 h-12 rounded' />}
                         <View className='justify-between'>
-                            <Text className='text-white'>Yash Singh</Text>
-                            <Text className='text-white'>Student</Text>
+                            <Text className='text-white'>{userData.username}</Text>
+                            <Text className='text-white'>{userData.profession}</Text>
                         </View>
                     </View>
                     <TouchableOpacity className='w-12'>

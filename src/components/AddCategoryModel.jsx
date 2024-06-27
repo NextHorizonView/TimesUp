@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarReg } from '@fortawesome/free-regular-svg-icons';
 import Toast from "react-native-toast-message"
-
 import { useDatabase } from '../context/DatabaseContext';
 
 const refStarArray = new Array(5).fill(0);

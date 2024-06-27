@@ -21,5 +21,13 @@ export default appSchema({
                 { name: 'category_id', type: 'string' },
             ]
         }),
+        tableSchema({
+            name: 'profiles',
+            columns: [
+                { name: 'username', type: 'string' },
+                { name: 'img_uri', type: 'string' }, 
+                { name: 'profession', type: 'string' },
+            ]
+        }),
     ]
 })

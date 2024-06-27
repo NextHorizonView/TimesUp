@@ -45,8 +45,6 @@ const TaskDropdown = ({ setCategoryName, isLight, tasks }) => {
     );
 };
 
-// export default TaskDropdown;
-
 const styles = StyleSheet.create({
     dropdown: {
         height: 50,

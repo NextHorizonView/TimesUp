@@ -4,6 +4,7 @@ import migrations from './models/migrations'
 import { Database } from '@nozbe/watermelondb'
 import Category from './models/Category'
 import Task from './models/Task'
+import Profile from './models/Profile'
 
 const adapter = new SQLiteAdapter({
     schema,
@@ -16,7 +17,7 @@ const adapter = new SQLiteAdapter({
 
 const database = new Database({
     adapter,
-    modelClasses: [Category, Task],
+    modelClasses: [Category, Task, Profile],
     actionsEnabled: true,
 })
 

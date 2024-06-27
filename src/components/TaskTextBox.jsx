@@ -1,5 +1,5 @@
 import { View, Text, TextInput } from 'react-native'
-import React, { useEffect } from 'react'
+import React from 'react'
 
 const TaskTextBox = ({ value, setValue, isMultiline, isLight }) => {
     return (

@@ -9,7 +9,7 @@ function MainRoutes() {
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
-                {/* <Stack.Screen component={InitialStack} name="Initial Stack" /> */}
+                <Stack.Screen component={InitialStack} name="Initial Stack" />
                 <Stack.Screen component={BottomTab} name="Bottom Tab" />
             </Stack.Navigator>
         </NavigationContainer>

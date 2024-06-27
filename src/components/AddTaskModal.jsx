@@ -2,16 +2,12 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-native-modal'
 import TaskTextBox from './TaskTextBox';
-import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faClock, faStar } from '@fortawesome/free-solid-svg-icons';
-import { faStar as faStarReg } from '@fortawesome/free-regular-svg-icons';
-import { addNewTask } from '../store/category/categorySlice';
+import { faClock } from '@fortawesome/free-solid-svg-icons';
 import DatePicker from 'react-native-date-picker'
 import { format } from 'date-fns'
 import TaskDropdown from './TaskDropdown';
 import Toast from "react-native-toast-message"
-import database from '../watermellon.config';
 import { useDatabase } from '../context/DatabaseContext';
 
 const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
@@ -141,12 +137,4 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
 }
 
 export default AddTaskModal;
-
-/**
- * name
- * description
- * category
- * start time
- * end time
- */
 

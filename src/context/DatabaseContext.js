@@ -96,6 +96,18 @@ export const DatabaseProvider = ({ children }) => {
             }));
 
             return taskDetails;
+        },
+
+        getUserData: async () => {
+            const user = await database.get('profiles').query().fetch();
+            if (user.length != 0) {
+                const userData = {
+                    username: user[user.length - 1].username,
+                    profession: user[user.length - 1].profession,
+                    imageUri: user[user.length - 1].imageUri,
+                }
+                return userData;
+            } return {};
         }
 
     }))

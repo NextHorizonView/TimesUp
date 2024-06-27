@@ -6,10 +6,7 @@ import { faAdd, faCalendar } from '@fortawesome/free-solid-svg-icons'
 import CalendarTaskContainer from '../components/CalendarTaskContainer'
 import DatePicker from 'react-native-date-picker'
 import { format, startOfWeek, endOfWeek, eachDayOfInterval, isDate } from 'date-fns'
-import { useSelector } from 'react-redux'
-import { getDateDetails } from '../utils/utils'
 import AddTaskModal from '../components/AddTaskModal'
-import LottieView from 'lottie-react-native'
 
 const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
