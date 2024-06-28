@@ -22,19 +22,7 @@ function BottomTab() {
             }} />
 
             <Tab.Screen name="Add Task" component={AddTaskScreen} options={{
-                tabBarIcon: ({ color, size, focused }) => <View
-                    style={{
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: focused ? '#26252C' : '#2E2E2E',
-                        width: Platform.OS == "ios" ? 70 : 60,
-                        height: Platform.OS == "ios" ? 50 : 60,
-                        top: Platform.OS == "ios" ? -10 : -20,
-                        borderRadius: Platform.OS == "ios" ? 25 : 30
-                    }}
-                >
-                    <FontAwesomeIcon size={size} color={color} icon={faAdd} />
-                </View>
+                tabBarIcon: ({ color, size }) => <FontAwesomeIcon size={size} color={color} icon={faAdd} />
             }} />
 
             <Tab.Screen name="Calendar" component={CalendarScreen} options={{

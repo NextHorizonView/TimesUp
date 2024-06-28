@@ -65,24 +65,30 @@ const enhance = withObservables(['categoryName'], ({ categoryName }) => {
                     Q.where('start_date', Q.lte(endDate))
                 )
             )
-        ).observeWithColumns(['category_id', 'is_completed']).pipe(switchMap(tasks => {
-            return Promise.all(
-                tasks.map(async task => {
-                    const category = await task.category.fetch();
-                    return {
-                        name: task.body,
-                        categoryName: category.name,
-                        priority: category.priority,
-                        startTime: task.startDate,
-                        due: task.dueDate,
-                        isDue: task.dueDate < new Date() && task.isCompleted == false,
-                        isCompleted: task.isCompleted,
-                    };
-                })
-            );
-        }),)
+        ).observeWithColumns(['category_id', 'is_completed']).pipe(
+            switchMap(async tasks => {
+                const tasksWithCategory = await Promise.all(
+                    tasks.map(async task => {
+                        const category = await task.category.fetch();
+                        return {
+                            name: task.body,
+                            categoryName: category.name,
+                            priority: category.priority,
+                            startTime: task.startDate,
+                            due: task.dueDate,
+                            isDue: task.dueDate < new Date() && !task.isCompleted,
+                            isCompleted: task.isCompleted,
+                        };
+                    })
+                );
+                // Sort tasks by priority
+                tasksWithCategory.sort((a, b) => b.priority - a.priority);
+                return tasksWithCategory;
+            })
+        )
     };
 });
+
 const EnhancedTaskList = enhance(TodayTaskContainer);
 
 export default EnhancedTaskList;

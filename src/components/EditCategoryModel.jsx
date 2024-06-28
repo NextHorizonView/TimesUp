@@ -34,9 +34,6 @@ const EditCategoryModel = ({ isModalOpen, setIsModalOpen, categoryDetails, setCa
 
     const onClose = () => {
         setIsModalOpen(false);
-        setName('');
-        setDescription('');
-        setPriority(1);
     }
 
     return (

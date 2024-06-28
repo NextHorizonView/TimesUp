@@ -35,7 +35,7 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
 
     useEffect(() => {
         setStartDate(new Date());
-        setEndDate(new Date(new Date().getTime() + 5 * 60000));
+        setEndDate(new Date(startDate.getTime() + 60 * 24 * 60000));
     }, [isModalOpen])
 
 
@@ -75,21 +75,21 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
         <View>
             <Modal isVisible={isModalOpen}>
                 <Toast />
-                <View className='bg-[#4837B1] px-6 py-8 rounded-3xl mx-2'>
-                    <Text className='mb-2 text-white'>Task</Text>
-                    <TaskTextBox value={name} setValue={setName} isMultiline={false} isLight={true} />
+                <View className='px-6 py-8 mx-2 bg-white rounded-3xl'>
+                    <Text className='mb-2 text-black'>Task</Text>
+                    <TaskTextBox taskLength={100} value={name} setValue={setName} isMultiline={false} isLight={false} />
 
-                    <Text className='mt-4 mb-2 text-white'>Task Category</Text>
-                    <TaskDropdown setCategoryName={setCategoryName} isLight={true} />
+                    <Text className='mt-4 mb-2 text-black'>Task Category</Text>
+                    <TaskDropdown setCategoryName={setCategoryName} isLight={false} />
 
-                    <Text className='mt-4 mb-2 text-white'>Task Start Date</Text>
-                    <TouchableOpacity onPress={() => setOpenStartDate(true)} className='rounded min-w-[200] bg-white flex-row p-2 items-center justify-between'>
+                    <Text className='mt-4 mb-2 text-black'>Task Start Date</Text>
+                    <TouchableOpacity onPress={() => setOpenStartDate(true)} className='rounded min-w-[200] border-black/30 border-2 flex-row p-2 items-center justify-between'>
                         <Text className='text-lg text-black'>{format(startDate, 'MMMM d, hh:mm')}</Text>
                         <FontAwesomeIcon icon={faClock} size={24} color='black' />
                     </TouchableOpacity>
 
-                    <Text className='mt-4 mb-2 text-white'>Task End Date</Text>
-                    <TouchableOpacity onPress={() => setOpenEndDate(true)} className='rounded min-w-[200] bg-white flex-row p-2 items-center justify-between'>
+                    <Text className='mt-4 mb-2 text-black'>Task End Date</Text>
+                    <TouchableOpacity onPress={() => setOpenEndDate(true)} className='rounded min-w-[200] border-black/30 border-2 flex-row p-2 items-center justify-between'>
                         <Text className='text-lg text-black'>{format(endDate, 'MMMM d, hh:mm')}</Text>
                         <FontAwesomeIcon icon={faClock} size={24} color='black' />
                     </TouchableOpacity>
@@ -123,8 +123,8 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
                     />
 
                     <View className='flex-row justify-between mt-8'>
-                        <TouchableOpacity onPress={onClose} className='items-center justify-center w-[48%] p-4 bg-white rounded-lg'>
-                            <Text className='text-[#26252C]'>Close</Text>
+                        <TouchableOpacity onPress={onClose} className='items-center justify-center w-[48%] p-4 bg-[#4837B1] rounded-lg'>
+                            <Text className='text-white'>Close</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={onSave} className='items-center justify-center w-[48%] p-4 bg-[#26252C] rounded-lg'>
                             <Text className='text-white'>Save</Text>

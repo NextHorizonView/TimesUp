@@ -9,27 +9,26 @@ import { switchMap } from '@nozbe/watermelondb/utils/rx'
 
 const CalendarTaskCard = ({ categoryDetails: { categoryName, numOfTaskLeft, totalTask, nextTaskDesc, nextTaskDate, nextTaskDueDate }, isLast }) => {
     const isComplete = numOfTaskLeft == 0;
-    const percentageOfTtaskCompleted = ((totalTask - numOfTaskLeft) / totalTask).toFixed(0) * 100;
-    console.log(isLast);
+    const percentageOfTasksCompleted = ((totalTask - numOfTaskLeft) / totalTask * 100).toFixed(0);
     return (
         <View>
             <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1.8, y: 0.5 }} colors={[!isComplete ? '#93A8F1' : '#4fc049', '#ffffff']} className='rounded-[20px] min-h-[120px] my-1 px-4 py-2' style={{ marginBottom: isLast && 30 }}>
                 <View className='flex-row justify-start gap-2'>
                     {!isComplete && <View className='bg-[#4938B5] py-1 px-4 rounded-xl'>
-                        <Text className='font-bold text-white'>{nextTaskDesc > 15 ? nextTaskDesc.slice(0, 15) + '...' : nextTaskDesc}</Text>
+                        <Text className='font-bold text-white'>{categoryName}</Text>
                     </View>}
                     <View className='px-4 py-1 bg-white rounded-xl'>
                         <Text className='font-bold text-[#4938B5]'>{numOfTaskLeft} Left</Text>
                     </View>
                 </View>
-                <Text className='mt-3 text-base font-bold text-white'>{categoryName}</Text>
+                <Text className='mt-3 text-base font-bold text-white'>{nextTaskDesc}</Text>
                 <View className='gap-2'>
-                    {!isComplete && <Text className='font-medium text-white'>{format(nextTaskDate, 'MMMM d, yyyy')} - {format(nextTaskDueDate, 'MMMM d, yyyy')}</Text>}
+                    {!isComplete && <Text className='font-medium text-white'>{format(nextTaskDate, 'MMMM d, hh:mm')} - {format(nextTaskDueDate, 'MMMM d, hh:mm')}</Text>}
                     <View className='flex-row items-center gap-2'>
                         <View className='w-[120px] h-2 bg-white rounded-full'>
-                            <View className='bg-[#4938B5] h-2 rounded-full' style={{ width: `${percentageOfTtaskCompleted}%` }} />
+                            <View className='bg-[#4938B5] h-2 rounded-full' style={{ width: `${percentageOfTasksCompleted}%` }} />
                         </View>
-                        <Text className='text-white'>{percentageOfTtaskCompleted}%</Text>
+                        <Text className='text-white'>{percentageOfTasksCompleted}%</Text>
                     </View>
                 </View>
             </LinearGradient>

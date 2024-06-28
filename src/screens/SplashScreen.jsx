@@ -13,7 +13,6 @@ const SplashScreen = ({ navigation }) => {
             useNativeDriver: true,
         }).start();
         const user = await database.get('profiles').query().fetch()
-        console.log(user);
         if (user.length === 0) {
             console.log('No user');
             navigation.replace('Create Profile');
