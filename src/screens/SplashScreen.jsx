@@ -14,10 +14,8 @@ const SplashScreen = ({ navigation }) => {
         }).start();
         const user = await database.get('profiles').query().fetch()
         if (user.length === 0) {
-            console.log('No user');
             navigation.replace('Create Profile');
         } else {
-            console.log('There is a user');
             navigation.replace('Bottom Tab');
         }
     };

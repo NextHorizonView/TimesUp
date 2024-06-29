@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useMemo } from 'react'
 import database from '../watermellon.config'
 import { Q } from '@nozbe/watermelondb'
+import { createTriggerNotification, cancelNotification } from '../utils/notification';
 
 const DatabaseContext = createContext(database);
 
@@ -50,7 +51,6 @@ export const DatabaseProvider = ({ children }) => {
 
         getCategoryByName: async (categoryName) => {
             if (categoryName) {
-                console.log(categoryName);
                 const categoryData = await database.get('categories').query(
                     Q.where("name", categoryName)
                 )
@@ -67,8 +67,9 @@ export const DatabaseProvider = ({ children }) => {
                 throw new Error('This category does not exists');
             }
             const category = existingCategory[0];
+
             await database.write(async () => {
-                const newTask = await database.get('tasks').create(task => {
+                await database.get('tasks').create(task => {
                     task.body = taskBody;
                     task.startDate = startDate;
                     task.dueDate = dueDate;
@@ -76,6 +77,8 @@ export const DatabaseProvider = ({ children }) => {
                     task.isCompleted = false;
                 });
             });
+            const notificationTime = new Date(new Date(startDate).getTime() - 5 * 60000)
+            createTriggerNotification(startDate, taskBody);
         },
 
         getTaskByCategory: async (categoryName) => {
@@ -108,6 +111,19 @@ export const DatabaseProvider = ({ children }) => {
                 }
                 return userData;
             } return {};
+        },
+
+        toggleTaskCompletion: async (task) => {
+            if (task.isCompleted && task.startDate > new Date(new Date() - 5 * 60000)) {
+                createTriggerNotification(task.startDate(), task.taskBody);
+            } else {
+                cancelNotification(task.startDate.getTime());
+            }
+            await database.write(async () => {
+                await task.update(t => {
+                    t.isCompleted = !task.isCompleted;
+                });
+            });
         }
 
     }))

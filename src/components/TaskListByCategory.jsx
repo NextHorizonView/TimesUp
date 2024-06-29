@@ -7,26 +7,47 @@ import TaskListItem from './TaskListItem';
 import LottieView from 'lottie-react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAdd } from '@fortawesome/free-solid-svg-icons';
+import { useDatabase } from '../context/DatabaseContext';
+import TodayTask from './TodayTask';
 
-const TaskListByCategory = ({ tasks, addTaskModal, setAddTaskModal }) => {
+const TaskListByCategory = ({ tasks, setAddTaskModal }) => {
     const [taskList, setTaskList] = useState([]);
+    const { toggleTaskCompletion } = useDatabase();
+    const [selectTask, setSelectTask] = useState('today')
+
+    const categorizeTasks = () => {
+        if (!tasks) return;
+        const todaysTasks = [];
+        const prevTasks = [];
+        const futureTasks = [];
+        const todayDate = new Date();
+        for (let i = 0; i < tasks.length; i++) {
+            const task = {
+                body: tasks[i].body,
+                startDate: tasks[i].startDate,
+                endDate: tasks[i].endDate,
+                isCompleted: tasks[i].isCompleted,
+                id: tasks[i].id,
+                toggleCompletion: () => toggleTaskCompletion(tasks[i]),
+            }
+            const taskDate = task.startDate;
+            if (taskDate.getDate() == todayDate.getDate() && taskDate.getMonth() == todayDate.getMonth() && taskDate.getFullYear() == todayDate.getFullYear()) {
+                todaysTasks.push(task);
+            } else if (taskDate < todayDate) {
+                prevTasks.push(task);
+            } else {
+                futureTasks.push(task);
+            }
+        }
+        return {
+            previous: prevTasks,
+            today: todaysTasks,
+            future: futureTasks
+        }
+    }
 
     useEffect(() => {
-        const tempTask = tasks.map(task => ({
-            body: task.body,
-            startDate: task.startDate,
-            endDate: task.endDate,
-            isCompleted: task.isCompleted,
-            id: task.id,
-            toggleCompletion: async () => {
-                await database.write(async () => {
-                    await task.update(t => {
-                        t.isCompleted = !task.isCompleted;
-                    });
-                });
-            },
-        }));
-        setTaskList(tempTask);
+        setTaskList(categorizeTasks());
     }, [tasks]);
 
     return (
@@ -43,9 +64,21 @@ const TaskListByCategory = ({ tasks, addTaskModal, setAddTaskModal }) => {
                                 </View>
                             </View>
                         </TouchableOpacity>
+                        <View className='flex-row flex-wrap gap-1'>
+                            <TouchableOpacity onPress={() => setSelectTask('previous')} className='p-2 m-2 rounded-xl' style={{ backgroundColor: selectTask === 'previous' ? '#4938B5' : '#DBD7F2' }}>
+                                <Text style={{ color: selectTask === 'previous' ? 'white' : 'black' }}>Previous Tasks</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setSelectTask('today')} className='bg-[#DBD7F2] p-2 m-2 rounded-xl' style={{ backgroundColor: selectTask === 'today' ? '#4938B5' : '#DBD7F2' }} >
+                                <Text style={{ color: selectTask === 'today' ? 'white' : 'black' }}>Todays Tasks</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setSelectTask('future')} className='bg-[#DBD7F2] p-2 m-2 rounded-xl' style={{ backgroundColor: selectTask === 'future' ? '#4938B5' : '#DBD7F2' }}>
+                                <Text style={{ color: selectTask === 'future' ? 'white' : 'black' }}>Future Tasks</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
+
                     <FlatList
-                        data={taskList}
+                        data={taskList[selectTask]}
                         keyExtractor={task => task.id}
                         renderItem={({ item, index }) => <TaskListItem task={item} index={index} />}
                         showsVerticalScrollIndicator={false}
@@ -71,6 +104,7 @@ const TaskListByCategory = ({ tasks, addTaskModal, setAddTaskModal }) => {
     );
 };
 
+
 const enhance = withObservables(['categoryName'], ({ categoryName }) => ({
     tasks: database.collections.get('tasks').query(
         Q.on('categories', 'name', categoryName)
@@ -80,7 +114,3 @@ const enhance = withObservables(['categoryName'], ({ categoryName }) => ({
 const EnhancedTaskList = enhance(TaskListByCategory);
 
 export default EnhancedTaskList;
-
-/*
-    database.get('categories')
-*/

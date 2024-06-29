@@ -3,10 +3,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import LottieView from 'lottie-react-native';
 
 const TaskListItem = ({ task, index }) => {
-    const [tick, setTick] = useState(false);
     const [isCompleted, setIsCompleted] = useState(task.isCompleted);
     const tickAnimationRef = useRef(null);
-    const cancelAnimationRef = useRef(null);
 
     useEffect(() => {
         if (isCompleted) {

@@ -1,4 +1,4 @@
-import { View, FlatList } from 'react-native'
+import { View, FlatList, Text } from 'react-native'
 import React from 'react'
 import TodayTask from './TodayTask'
 import { withObservables } from '@nozbe/watermelondb/react'
@@ -6,33 +6,41 @@ import { Q } from '@nozbe/watermelondb'
 import database from '../watermellon.config'
 import { switchMap } from '@nozbe/watermelondb/utils/rx'
 import LottieView from 'lottie-react-native'
+import { Dimensions } from 'react-native'
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const TodayTaskContainer = ({ tasks }) => {
     return (
-        <View className='pt-2'>
-            {tasks && tasks.length > 0 ?
-                <FlatList
-                    contentContainerStyle={{ paddingTop: 10 }}
-                    showsVerticalScrollIndicator={false}
-                    data={tasks}
-                    renderItem={({ item }) => (
-                        <TodayTask
-                            priority={item.priority}
-                            name={item.name}
-                            isDue={item.isDue}
-                            due={item.due}
-                            startTime={item.startTime}
-                            category={item.category}
-                            isCompleted={item.isCompleted}
+        <View className='flex-1 pt-6 rounded-t-3xl' style={{ width: SCREEN_WIDTH }}>
+            <View className='flex-1 gap-2 px-6 pt-6'>
+                <Text className='text-2xl font-bold text-white'>Today's Task</Text>
+                <View className='flex-1 pt-2'>
+                    {tasks && tasks.length > 0 ?
+                        <FlatList
+                            contentContainerStyle={{ paddingTop: 10 }}
+                            showsVerticalScrollIndicator={false}
+                            data={tasks}
+                            renderItem={({ item }) => (
+                                <TodayTask
+                                    priority={item.priority}
+                                    name={item.name}
+                                    isDue={item.isDue}
+                                    due={item.due}
+                                    startTime={item.startTime}
+                                    category={item.category}
+                                    isCompleted={item.isCompleted}
+                                />
+                            )}
+                            keyExtractor={(item, index) => index}
                         />
-                    )}
-                    keyExtractor={(item, index) => index}
-                />
-                :
-                <View className='items-center mt-8'>
-                    <LottieView autoPlay loop style={{ width: 240, height: 240 }} source={require('../assets/todayNoTask.json')} />
+                        :
+                        <View className='items-center mt-8'>
+                            <LottieView autoPlay loop style={{ width: 240, height: 240 }} source={require('../assets/todayNoTask.json')} />
+                        </View>
+                    }
                 </View>
-            }
+            </View>
         </View>
     )
 }

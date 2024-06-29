@@ -14,9 +14,9 @@ const CalendarTaskCard = ({ categoryDetails: { categoryName, numOfTaskLeft, tota
         <View>
             <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1.8, y: 0.5 }} colors={[!isComplete ? '#93A8F1' : '#4fc049', '#ffffff']} className='rounded-[20px] min-h-[120px] my-1 px-4 py-2' style={{ marginBottom: isLast && 30 }}>
                 <View className='flex-row justify-start gap-2'>
-                    {!isComplete && <View className='bg-[#4938B5] py-1 px-4 rounded-xl'>
+                    <View className='bg-[#4938B5] py-1 px-4 rounded-xl'>
                         <Text className='font-bold text-white'>{categoryName}</Text>
-                    </View>}
+                    </View>
                     <View className='px-4 py-1 bg-white rounded-xl'>
                         <Text className='font-bold text-[#4938B5]'>{numOfTaskLeft} Left</Text>
                     </View>
