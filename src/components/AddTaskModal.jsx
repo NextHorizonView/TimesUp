@@ -43,7 +43,7 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date, category }) => {
     }, [isModalOpen])
 
 
-    const onSave = () => {
+    const onSave = async () => {
         if (name.length == 0) {
             Toast.show({
                 type: 'error',
@@ -53,7 +53,7 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date, category }) => {
             return;
         }
         setIsModalOpen(false);
-        addNewTask(name, startDate, dueDate, categoryName).then(() => {
+        await addNewTask(name, startDate, dueDate, categoryName).then(() => {
             setName('');
         }).catch(err => {
             Toast.show({
@@ -61,6 +61,7 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date, category }) => {
                 text1: err.message,
                 swipeable: true
             })
+            console.log(err);
         });
     }
 
@@ -117,7 +118,7 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date, category }) => {
                         onCancel={() => {
                             setOpenDueDate(false);
                         }}
-                        minimumDate={startDate}
+                        minimumDate={new Date(startDate.getTime() + 5 * 60000)}
                     />
 
                     <View className='flex-row justify-between mt-8'>

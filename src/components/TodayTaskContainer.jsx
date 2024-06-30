@@ -1,5 +1,5 @@
 import { View, FlatList, Text } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import TodayTask from './TodayTask'
 import { withObservables } from '@nozbe/watermelondb/react'
 import { Q } from '@nozbe/watermelondb'
@@ -7,10 +7,25 @@ import database from '../watermellon.config'
 import { switchMap } from '@nozbe/watermelondb/utils/rx'
 import LottieView from 'lottie-react-native'
 import { Dimensions } from 'react-native'
+import { sendCongratulatoryMessage } from '../utils/notification'
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const TodayTaskContainer = ({ tasks, navigateToTaskScreen }) => {
+    const [todayTaskCount, setTodayTaskCount] = useState(0);
+
+    useEffect(() => {
+        const completedTaskCount = tasks.reduce((acc, task) => !task.isCompleted ? (acc + 1) : acc, 0)
+        if (completedTaskCount == 0 && todayTaskCount != 0) {
+            console.log('hello');
+            sendCongratulatoryMessage();
+            setTodayTaskCount(0);
+        } else {
+            console.log();
+            setTodayTaskCount(tasks.reduce((acc, task) => !task.isCompleted ? (acc + 1) : acc, 0));
+        }
+    }, [tasks])
+
     return (
         <View className='flex-1 pt-6 rounded-t-3xl' style={{ width: SCREEN_WIDTH }}>
             <View className='flex-1 gap-2 px-6 pt-6'>

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useMemo } from 'react'
 import database from '../watermellon.config'
 import { Q } from '@nozbe/watermelondb'
-import { createTriggerNotification, cancelNotification } from '../utils/notification';
+import { sendTaskReminder, cancelNotification, sendCongratulatoryMessage } from '../utils/notification';
 
 const DatabaseContext = createContext(database);
 
@@ -91,7 +91,7 @@ export const DatabaseProvider = ({ children }) => {
                     task.isCompleted = false;
                 });
             });
-            createTriggerNotification(startDate, taskBody);
+            sendTaskReminder(startDate, taskBody);
         },
 
         getTaskByCategory: async (categoryName) => {
@@ -126,9 +126,8 @@ export const DatabaseProvider = ({ children }) => {
         },
 
         toggleTaskCompletion: async (task) => {
-            console.log(task);
             if (task.isCompleted && task.startDate > new Date(new Date() - 5 * 60000)) {
-                createTriggerNotification(task.startDate, task.taskBody);
+                sendTaskReminder(task.startDate, task.taskBody);
             } else {
                 cancelNotification(task.startDate.getTime());
             }
@@ -137,6 +136,7 @@ export const DatabaseProvider = ({ children }) => {
                     t.isCompleted = !task.isCompleted;
                 });
             });
+
         }
 
     }))
