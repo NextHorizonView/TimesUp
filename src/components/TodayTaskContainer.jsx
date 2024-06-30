@@ -21,7 +21,6 @@ const TodayTaskContainer = ({ tasks, navigateToTaskScreen }) => {
             sendCongratulatoryMessage();
             setTodayTaskCount(0);
         } else {
-            console.log();
             setTodayTaskCount(tasks.reduce((acc, task) => !task.isCompleted ? (acc + 1) : acc, 0));
         }
     }, [tasks])

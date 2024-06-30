@@ -126,6 +126,7 @@ export const DatabaseProvider = ({ children }) => {
         },
 
         toggleTaskCompletion: async (task) => {
+            console.log(task);
             if (task.isCompleted && task.startDate > new Date(new Date() - 5 * 60000)) {
                 sendTaskReminder(task.startDate, task.taskBody);
             } else {
