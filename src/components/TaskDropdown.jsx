@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import database from '../watermellon.config';
 
-const TaskDropdown = ({ setCategoryName, isLight, tasks }) => {
+const TaskDropdown = ({ setCategoryName, isLight, tasks, categoryName }) => {
     const [isFocus, setIsFocus] = useState(false);
     const [value, setValue] = useState('');
     const [categories, setCategories] = useState([])
@@ -12,13 +12,29 @@ const TaskDropdown = ({ setCategoryName, isLight, tasks }) => {
         const temp = []
         tasks.map((category, id) => {
             temp.push({ label: category.name, value: id })
+            if (categoryName && category.name == categoryName) {
+                setValue(id)
+                setCategoryName(categoryName)
+            }
         })
         if (temp.length > 0) {
             setCategories(temp);
-            setCategoryName(temp[0].label);
-            setValue(temp[0]);
+            if (!categoryName) {
+                setCategoryName(temp[0].label);
+                setValue(temp[0]);
+            }
         }
     }, [tasks])
+    useEffect(() => {
+        if (tasks) {
+            for (let i = 0; i < tasks.length; i++) {
+                if (tasks[i].name == categoryName) {
+                    setValue(i);
+                    setCategoryName(categoryName);
+                }
+            }
+        }
+    }, [categoryName])
     return (
         <View>
             <Dropdown

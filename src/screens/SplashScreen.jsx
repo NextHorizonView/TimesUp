@@ -21,7 +21,7 @@ const SplashScreen = ({ navigation }) => {
     };
 
     return (
-        <View className='items-center flex-1 pt-24 bg-black'>
+        <View className='items-center flex-1 pt-24 bg-purple-100'>
             <LottieView onAnimationFinish={() => { handleAnimationFinish() }} autoPlay loop={false} style={{ width: 240, height: 240 }} source={require('../assets/splashScreenAnim.json')} />
             <Animated.Image
                 className='mx-4 mt-12 text-3xl font-bold text-center text-[#4938B5]'

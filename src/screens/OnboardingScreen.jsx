@@ -33,7 +33,7 @@ const OnboardingScreen = ({ navigation }) => {
   }
 
   return (
-    <View className='items-center justify-between flex-1 py-24 bg-black'>
+    <View className='items-center justify-between flex-1 py-24 bg-purple-400'>
       <View className=''>
         <View className=''>
           <LottieView autoPlay loop style={{ width: 240, height: 240 }} source={require('../assets/success.json')} />
@@ -45,7 +45,7 @@ const OnboardingScreen = ({ navigation }) => {
         </Text>
       </View>
       <TouchableOpacity onPress={onPressHandler} className='bg-[#4938B5] p-4 mb-8 rounded w-48'>
-        <Text className='text-center'>Continue</Text>
+        <Text className='text-center text-white'>Continue</Text>
       </TouchableOpacity>
     </View>
   )

@@ -2,6 +2,7 @@ import notifee, { TimestampTrigger, TriggerType } from '@notifee/react-native';
 
 export async function createTriggerNotification(startDate, title) {
     const notificationTime = new Date(new Date(startDate).getTime() - 5 * 60000);
+    console.log('0', notificationTime);
     if (notificationTime <= new Date()) return;
     const trigger = {
         type: TriggerType.TIMESTAMP,
@@ -12,7 +13,6 @@ export async function createTriggerNotification(startDate, title) {
         id: 'default',
         name: 'Default Channel',
     });
-
     await notifee.createTriggerNotification(
         {
             id: `${startDate.getTime()}`,

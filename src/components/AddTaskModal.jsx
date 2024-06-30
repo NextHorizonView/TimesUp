@@ -10,15 +10,19 @@ import TaskDropdown from './TaskDropdown';
 import Toast from "react-native-toast-message"
 import { useDatabase } from '../context/DatabaseContext';
 
-const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
+const AddTaskModal = ({ isModalOpen, setIsModalOpen, date, category }) => {
     const [name, setName] = useState('');
     const [startDate, setStartDate] = useState(date || new Date());
     const [endDate, setEndDate] = useState(new Date(new Date().getTime() + 60 * 24 * 60000));
     const [openStartDate, setOpenStartDate] = useState(false);
     const [openEndDate, setOpenEndDate] = useState(false);
-    const [categoryName, setCategoryName] = useState('');
+    const [categoryName, setCategoryName] = useState(category || '');
 
     const { addNewTask } = useDatabase();
+
+    useEffect(() => {
+        setCategoryName(category || '')
+    }, [category]);
 
     useEffect(() => {
         if (date) {
@@ -43,18 +47,12 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
         if (name.length == 0) {
             Toast.show({
                 type: 'error',
-                text1: 'Please don\' keep task empty',
+                text1: 'Please don\'t keep task empty',
                 swipeable: true
             })
             return;
         }
         setIsModalOpen(false);
-        const taskDetails = {
-            name,
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-            isCompleted: false,
-        }
         addNewTask(name, startDate, endDate, categoryName).then(() => {
             setName('');
         }).catch(err => {
@@ -80,7 +78,7 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date }) => {
                     <TaskTextBox taskLength={100} value={name} setValue={setName} isMultiline={false} isLight={false} />
 
                     <Text className='mt-4 mb-2 text-black'>Task Category</Text>
-                    <TaskDropdown setCategoryName={setCategoryName} isLight={false} />
+                    <TaskDropdown setCategoryName={setCategoryName} isLight={false} categoryName={categoryName} />
 
                     <Text className='mt-4 mb-2 text-black'>Task Start Date</Text>
                     <TouchableOpacity onPress={() => setOpenStartDate(true)} className='rounded min-w-[200] border-black/30 border-2 flex-row p-2 items-center justify-between'>

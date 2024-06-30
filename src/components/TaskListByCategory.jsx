@@ -8,7 +8,6 @@ import LottieView from 'lottie-react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAdd } from '@fortawesome/free-solid-svg-icons';
 import { useDatabase } from '../context/DatabaseContext';
-import TodayTask from './TodayTask';
 
 const TaskListByCategory = ({ tasks, setAddTaskModal }) => {
     const [taskList, setTaskList] = useState([]);

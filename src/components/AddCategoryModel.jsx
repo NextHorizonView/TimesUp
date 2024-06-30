@@ -17,7 +17,7 @@ const AddCategoryModal = ({ isModalOpen, setIsModalOpen }) => {
 
     const { addNewCategory } = useDatabase();
 
-    const onSave = () => {
+    const onSave = async () => {
         addNewCategory(name, description, priority).then(() => {
             setIsModalOpen(false);
             setName('');

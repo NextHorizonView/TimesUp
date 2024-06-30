@@ -10,7 +10,7 @@ import { Dimensions } from 'react-native'
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-const TodayTaskContainer = ({ tasks }) => {
+const TodayTaskContainer = ({ tasks, navigateToTaskScreen }) => {
     return (
         <View className='flex-1 pt-6 rounded-t-3xl' style={{ width: SCREEN_WIDTH }}>
             <View className='flex-1 gap-2 px-6 pt-6'>
@@ -28,8 +28,9 @@ const TodayTaskContainer = ({ tasks }) => {
                                     isDue={item.isDue}
                                     due={item.due}
                                     startTime={item.startTime}
-                                    category={item.category}
+                                    category={item.categoryName}
                                     isCompleted={item.isCompleted}
+                                    navigateToTaskScreen={navigateToTaskScreen}
                                 />
                             )}
                             keyExtractor={(item, index) => index}

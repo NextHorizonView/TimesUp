@@ -22,6 +22,14 @@ export const DatabaseProvider = ({ children }) => {
             });
         },
 
+        checkIfCategoryExist: async (categoryName) => {
+            const existingCategory = await database.get('categories').query(Q.where('name', categoryName)).fetch();
+            console.log(existingCategory);
+            if (existingCategory.length > 0) {
+                return true;
+            } return false;
+        },
+
         editCategory: async (name, description, priority, category) => {
             return await database.write(async () => {
                 await category.update(c => {
@@ -41,6 +49,12 @@ export const DatabaseProvider = ({ children }) => {
                     await task.destroyPermanently();
                 }
                 await category.destroyPermanently();
+            });
+        },
+
+        deleteTask: async (task) => {
+            return await database.write(async () => {
+                await task.destroyPermanently();
             });
         },
 
@@ -77,7 +91,6 @@ export const DatabaseProvider = ({ children }) => {
                     task.isCompleted = false;
                 });
             });
-            const notificationTime = new Date(new Date(startDate).getTime() - 5 * 60000)
             createTriggerNotification(startDate, taskBody);
         },
 
@@ -89,7 +102,6 @@ export const DatabaseProvider = ({ children }) => {
             const category = categories[0];
             const tasks = await category.tasks.fetch();
 
-            // Map through the tasks to extract relevant data
             const taskDetails = tasks.map(task => ({
                 id: task.id,
                 body: task.body,
