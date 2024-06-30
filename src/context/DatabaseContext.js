@@ -126,8 +126,9 @@ export const DatabaseProvider = ({ children }) => {
         },
 
         toggleTaskCompletion: async (task) => {
+            console.log(task);
             if (task.isCompleted && task.startDate > new Date(new Date() - 5 * 60000)) {
-                createTriggerNotification(task.startDate(), task.taskBody);
+                createTriggerNotification(task.startDate, task.taskBody);
             } else {
                 cancelNotification(task.startDate.getTime());
             }

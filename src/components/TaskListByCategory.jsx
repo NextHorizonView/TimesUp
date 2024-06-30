@@ -24,7 +24,7 @@ const TaskListByCategory = ({ tasks, setAddTaskModal }) => {
             const task = {
                 body: tasks[i].body,
                 startDate: tasks[i].startDate,
-                endDate: tasks[i].endDate,
+                dueDate: tasks[i].dueDate,
                 isCompleted: tasks[i].isCompleted,
                 id: tasks[i].id,
                 toggleCompletion: () => toggleTaskCompletion(tasks[i]),

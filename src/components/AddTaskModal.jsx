@@ -13,9 +13,9 @@ import { useDatabase } from '../context/DatabaseContext';
 const AddTaskModal = ({ isModalOpen, setIsModalOpen, date, category }) => {
     const [name, setName] = useState('');
     const [startDate, setStartDate] = useState(date || new Date());
-    const [endDate, setEndDate] = useState(new Date(new Date().getTime() + 60 * 24 * 60000));
+    const [dueDate, setDueDate] = useState(new Date(new Date().getTime() + 60 * 24 * 60000));
     const [openStartDate, setOpenStartDate] = useState(false);
-    const [openEndDate, setOpenEndDate] = useState(false);
+    const [openDueDate, setOpenDueDate] = useState(false);
     const [categoryName, setCategoryName] = useState(category || '');
 
     const { addNewTask } = useDatabase();
@@ -27,19 +27,19 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date, category }) => {
     useEffect(() => {
         if (date) {
             setStartDate(date);
-            setEndDate(new Date(date.getTime() + 60 * 24 * 60000));
+            setDueDate(new Date(date.getTime() + 60 * 24 * 60000));
         }
     }, [date])
 
     useEffect(() => {
-        if (endDate < startDate) {
-            setEndDate(new Date(startDate.getTime() + 60 * 24 * 60000));
+        if (dueDate < startDate) {
+            setDueDate(new Date(startDate.getTime() + 60 * 24 * 60000));
         }
     }, [startDate])
 
     useEffect(() => {
         setStartDate(new Date());
-        setEndDate(new Date(startDate.getTime() + 60 * 24 * 60000));
+        setDueDate(new Date(startDate.getTime() + 60 * 24 * 60000));
     }, [isModalOpen])
 
 
@@ -53,7 +53,7 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date, category }) => {
             return;
         }
         setIsModalOpen(false);
-        addNewTask(name, startDate, endDate, categoryName).then(() => {
+        addNewTask(name, startDate, dueDate, categoryName).then(() => {
             setName('');
         }).catch(err => {
             Toast.show({
@@ -87,8 +87,8 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date, category }) => {
                     </TouchableOpacity>
 
                     <Text className='mt-4 mb-2 text-black'>Task End Date</Text>
-                    <TouchableOpacity onPress={() => setOpenEndDate(true)} className='rounded min-w-[200] border-black/30 border-2 flex-row p-2 items-center justify-between'>
-                        <Text className='text-lg text-black'>{format(endDate, 'MMMM d, hh:mm')}</Text>
+                    <TouchableOpacity onPress={() => setOpenDueDate(true)} className='rounded min-w-[200] border-black/30 border-2 flex-row p-2 items-center justify-between'>
+                        <Text className='text-lg text-black'>{format(dueDate, 'MMMM d, hh:mm')}</Text>
                         <FontAwesomeIcon icon={faClock} size={24} color='black' />
                     </TouchableOpacity>
                     <DatePicker
@@ -108,14 +108,14 @@ const AddTaskModal = ({ isModalOpen, setIsModalOpen, date, category }) => {
                     <DatePicker
                         mode="datetime"
                         modal
-                        open={openEndDate}
-                        date={endDate}
+                        open={openDueDate}
+                        date={dueDate}
                         onConfirm={(selectedDate) => {
-                            setEndDate(selectedDate);
-                            setOpenEndDate(false);
+                            setDueDate(selectedDate);
+                            setOpenDueDate(false);
                         }}
                         onCancel={() => {
-                            setOpenEndDate(false);
+                            setOpenDueDate(false);
                         }}
                         minimumDate={startDate}
                     />

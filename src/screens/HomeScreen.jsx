@@ -24,11 +24,13 @@ const HomeScreen = ({ navigation, user }) => {
     }, [user])
 
     const onNavigateToEditProfileScreen = () => {
-        navigation.navigate('Edit Profile', {userData: {
-            username: userData.username,
-            profession: userData.profession,
-            imageUri: userData.imageUri,
-        }});
+        navigation.navigate('Edit Profile', {
+            userData: {
+                username: userData.username,
+                profession: userData.profession,
+                imageUri: userData.imageUri,
+            }
+        });
     }
 
     return (
