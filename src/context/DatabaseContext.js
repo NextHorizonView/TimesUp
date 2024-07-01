@@ -52,10 +52,11 @@ export const DatabaseProvider = ({ children }) => {
             });
         },
 
-        deleteTask: async (task) => {
+        deleteTask: async (taskId) => {
+            const task = await database.get('tasks').query(Q.where('id', taskId)).fetch();
             return await database.write(async () => {
-                await task.destroyPermanently();
-            });
+                await task[0].destroyPermanently()
+            })
         },
 
         getAllCategories: async () => {

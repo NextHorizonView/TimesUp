@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { withObservables } from '@nozbe/watermelondb/react';
 import database from '../watermellon.config';
@@ -8,10 +8,11 @@ import LottieView from 'lottie-react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAdd } from '@fortawesome/free-solid-svg-icons';
 import { useDatabase } from '../context/DatabaseContext';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const TaskListByCategory = ({ tasks, setAddTaskModal }) => {
     const [taskList, setTaskList] = useState([]);
-    const { toggleTaskCompletion } = useDatabase();
+    const { toggleTaskCompletion, deleteTask } = useDatabase();
     const [selectTask, setSelectTask] = useState('today')
 
     const categorizeTasks = () => {
@@ -49,6 +50,20 @@ const TaskListByCategory = ({ tasks, setAddTaskModal }) => {
         setTaskList(categorizeTasks());
     }, [tasks]);
 
+    const onDeleteTask = (id) => {
+        setTaskList((prevTaskList) => ({
+            ...prevTaskList,
+            [selectTask]: prevTaskList[selectTask].filter((task) => task.id !== id)
+        }));
+        deleteTask(id);
+    };
+
+    const handleDelete = (id) => {
+        onDeleteTask(id);
+    }
+    useEffect(() => {
+        console.log(taskList);
+    }, [taskList])
     return (
         <View className='flex-1'>
             {tasks && tasks.length > 0 ?
@@ -76,12 +91,14 @@ const TaskListByCategory = ({ tasks, setAddTaskModal }) => {
                         </View>
                     </View>
 
-                    <FlatList
-                        data={taskList[selectTask]}
-                        keyExtractor={task => task.id}
-                        renderItem={({ item, index }) => <TaskListItem task={item} index={index} />}
-                        showsVerticalScrollIndicator={false}
-                    />
+                    <GestureHandlerRootView>
+                        <FlatList
+                            data={taskList[selectTask]}
+                            keyExtractor={task => task.id}
+                            renderItem={({ item, index }) => <TaskListItem task={item} index={index} handleDelete={handleDelete} />}
+                            showsVerticalScrollIndicator={false}
+                        />
+                    </GestureHandlerRootView>
                 </View>
                 :
                 <View>
@@ -107,7 +124,7 @@ const TaskListByCategory = ({ tasks, setAddTaskModal }) => {
 const enhance = withObservables(['categoryName'], ({ categoryName }) => ({
     tasks: database.collections.get('tasks').query(
         Q.on('categories', 'name', categoryName)
-    ).observeWithColumns(['is_completed', 'body', 'start_date', 'due_date', 'categories']),
+    ).observeWithColumns([]),
 }));
 
 const EnhancedTaskList = enhance(TaskListByCategory);
