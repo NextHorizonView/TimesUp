@@ -9,7 +9,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const TOUCH_SLOP = 5;
-const TIME_TO_ACTIVATE_PAN = 400;
+const TIME_TO_ACTIVATE_PAN = 200;
 
 const TaskListItem = ({ task, index, handleDelete }) => {
     const [isCompleted, setIsCompleted] = useState(task.isCompleted);

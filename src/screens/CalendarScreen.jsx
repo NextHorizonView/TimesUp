@@ -10,7 +10,7 @@ import AddTaskModal from '../components/AddTaskModal'
 
 const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const CalendarScreen = () => {
+const CalendarScreen = ({navigation}) => {
     const [date, setDate] = useState(new Date());
     const [openDatePicker, setOpenDatePicker] = useState(false);
     const [weekDates, setWeekDates] = useState([]);
@@ -33,6 +33,10 @@ const CalendarScreen = () => {
         const dates = eachDayOfInterval({ start, end });
         setWeekDates(dates);
     };
+
+    const navigateToTaskScreen = (categoryName) => {
+        navigation.navigate('Add Task', { categoryName })
+    }
 
 
     return (
@@ -75,7 +79,7 @@ const CalendarScreen = () => {
                 </View>
             </LinearGradient>
             <AddTaskModal date={selectedDate} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
-            <CalendarTaskContainer date={selectedDate} />
+            <CalendarTaskContainer date={selectedDate} navigateToTaskScreen={navigateToTaskScreen} />
             <TouchableOpacity onPress={() => setIsModalOpen(true)} className='absolute bottom-0 left-0 right-0 mx-4 mb-3'>
                 <View className='p-4 bg-[#26252C] rounded-xl flex-row justify-between items-center'>
                     <Text className='font-medium text-white'>Add Task</Text>

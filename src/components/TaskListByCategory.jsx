@@ -124,7 +124,7 @@ const TaskListByCategory = ({ tasks, setAddTaskModal }) => {
 const enhance = withObservables(['categoryName'], ({ categoryName }) => ({
     tasks: database.collections.get('tasks').query(
         Q.on('categories', 'name', categoryName)
-    ).observeWithColumns([]),
+    ).observeWithColumns(['body', 'start_date', 'due_date', 'is_completed']),
 }));
 
 const EnhancedTaskList = enhance(TaskListByCategory);

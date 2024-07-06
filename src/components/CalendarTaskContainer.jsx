@@ -6,7 +6,7 @@ import { Q } from '@nozbe/watermelondb'
 import CalendarTaskCard from './CalendarTaskCard';
 import LottieView from 'lottie-react-native'
 
-const CalendarTaskContainer = ({ categories, date }) => {
+const CalendarTaskContainer = ({ categories, date, navigateToTaskScreen }) => {
     return (
         <View className='flex-1 px-4 pt-2 mb-16'>
             {categories && categories.length > 0 ?
@@ -19,6 +19,7 @@ const CalendarTaskContainer = ({ categories, date }) => {
                             category={item}
                             date={date}
                             isLast={index == categories.length - 1}
+                            navigateToTaskScreen={navigateToTaskScreen}
                         />
                     )}
                     keyExtractor={(item, index) => index}

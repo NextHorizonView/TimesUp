@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { format } from 'date-fns'
@@ -7,11 +7,11 @@ import database from '../watermellon.config'
 import { Q } from '@nozbe/watermelondb'
 import { switchMap } from '@nozbe/watermelondb/utils/rx'
 
-const CalendarTaskCard = ({ categoryDetails: { categoryName, numOfTaskLeft, totalTask, nextTaskDesc, nextTaskDate, nextTaskDueDate }, isLast }) => {
+const CalendarTaskCard = ({ categoryDetails: { categoryName, numOfTaskLeft, totalTask, nextTaskDesc, nextTaskDate, nextTaskDueDate }, isLast, navigateToTaskScreen }) => {
     const isComplete = numOfTaskLeft == 0;
     const percentageOfTasksCompleted = ((totalTask - numOfTaskLeft) / totalTask * 100).toFixed(0);
     return (
-        <View>
+        <TouchableOpacity onPress={() => navigateToTaskScreen(categoryName)}>
             <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1.8, y: 0.5 }} colors={[!isComplete ? '#93A8F1' : '#4fc049', '#ffffff']} className='rounded-[20px] min-h-[120px] my-1 px-4 py-2' style={{ marginBottom: isLast && 30 }}>
                 <View className='flex-row justify-start gap-2'>
                     <View className='bg-[#4938B5] py-1 px-4 rounded-xl'>
@@ -32,7 +32,7 @@ const CalendarTaskCard = ({ categoryDetails: { categoryName, numOfTaskLeft, tota
                     </View>
                 </View>
             </LinearGradient>
-        </View>
+        </TouchableOpacity>
     )
 }
 
