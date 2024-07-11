@@ -45,14 +45,15 @@ const CreateProfileScreen = ({ navigation }) => {
     }
     const existingUser = await database.get('profiles').query().fetch();
     if (existingUser.length > 0) {
-      throw new Error('This category already exists');
+      throw new Error('This user already exists');
     }
     await database.write(async () => {
       await database.get('profiles').create(user => {
         user.username = username;
         user.profession = profession;
         user.imageUri = image ? `data:${image.type};base64,${image.base64}` : '';
-      }).then(() => navigation.replace('Onboarding', { username, profession, image })).catch(err => console.log(err));
+        user.isBeginner = true;
+      }).then(() => navigation.replace('Onboarding')).catch(err => console.log(err));
 
     });
   };

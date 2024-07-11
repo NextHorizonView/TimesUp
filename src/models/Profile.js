@@ -6,4 +6,5 @@ export default class Profile extends Model {
     @text('username') username;
     @field('img_uri') imageUri;
     @field('profession') profession;
+    @field('is_beginner') isBeginner;
 }

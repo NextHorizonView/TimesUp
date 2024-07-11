@@ -27,6 +27,7 @@ export default appSchema({
                 { name: 'username', type: 'string' },
                 { name: 'img_uri', type: 'string' }, 
                 { name: 'profession', type: 'string' },
+                { name: 'is_beginner', type: 'boolean' },
             ]
         }),
     ]

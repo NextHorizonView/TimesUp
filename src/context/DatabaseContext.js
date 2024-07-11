@@ -126,8 +126,17 @@ export const DatabaseProvider = ({ children }) => {
             } return {};
         },
 
+        switchOfTutorial: async () => {
+            const user = await database.get('profiles').query().fetch();
+            console.log(user);
+            return await database.write(async () => {
+                await user[0].update(u => {
+                    u.isBeginner = false
+                });
+            });
+        },
+
         toggleTaskCompletion: async (task) => {
-            console.log(task);
             if (task.isCompleted && task.startDate > new Date(new Date() - 5 * 60000)) {
                 sendTaskReminder(task.startDate, task.taskBody);
             } else {

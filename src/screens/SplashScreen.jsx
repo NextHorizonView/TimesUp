@@ -11,24 +11,31 @@ const SplashScreen = ({ navigation }) => {
             toValue: 1,
             duration: 1000,
             useNativeDriver: true,
-        }).start();
-        const user = await database.get('profiles').query().fetch()
-        if (user.length === 0) {
-            navigation.replace('Create Profile');
-        } else {
-            navigation.replace('Bottom Tab');
-        }
+        }).start(async () => {
+            const user = await database.get('profiles').query().fetch();
+            if (user.length === 0) {
+                navigation.replace('Create Profile');
+            } else {
+                if (user[0].isBeginner) {
+                    navigation.replace('Tutorial');
+                } else {
+                    console.log('Main');
+                    navigation.replace('Bottom Tab');
+                }
+            }
+        });
     };
+
 
     return (
         <View className='items-center flex-1 pt-24 bg-purple-100'>
             <LottieView onAnimationFinish={() => { handleAnimationFinish() }} autoPlay loop={false} style={{ width: 240, height: 240 }} source={require('../assets/splashScreenAnim.json')} />
-            <Animated.Image
-                className='mx-4 mt-12 text-3xl font-bold text-center text-[#4938B5]'
+            <Animated.Text
+                className='mx-4 mt-12 text-5xl font-[900] text-center text-[#4938B5]'
                 style={{ opacity: imageOpacity, marginTop: 48 }}
-                source={require('../assets/TodoApp.png')}
             >
-            </Animated.Image>
+                Taskify
+            </Animated.Text>
         </View>
     )
 }

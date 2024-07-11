@@ -6,7 +6,7 @@ import database from '../watermellon.config';
 import { useDatabase } from '../context/DatabaseContext';
 
 const OnboardingScreen = ({ navigation }) => {
-  const { addNewCategory } = useDatabase();
+  const { addNewCategory, switchOfTutorial } = useDatabase();
   useEffect(() => {
     const createInitialData = async () => {
       const categories = await database.get('categories').query().fetch();
@@ -29,7 +29,14 @@ const OnboardingScreen = ({ navigation }) => {
   }, [])
 
   const onPressHandler = () => {
-    navigation.replace('Bottom Tab')
+    console.log('Go to Main');
+    navigation.replace('Bottom Tab');
+    switchOfTutorial();
+  }
+
+  const navigateToTutorial = () => {
+    console.log('Go to tutorial');
+    navigation.replace('Tutorial');
   }
 
   return (
@@ -44,8 +51,12 @@ const OnboardingScreen = ({ navigation }) => {
         <Text className='text-lg font-bold text-center'>Congratulations!! your account was successfully created
         </Text>
       </View>
-      <TouchableOpacity onPress={onPressHandler} className='bg-[#4938B5] p-4 mb-8 rounded w-48'>
-        <Text className='text-center text-white'>Continue</Text>
+      <TouchableOpacity onPress={onPressHandler} className='bg-[#4938B5] p-4 rounded w-48'>
+        <Text className='text-center text-white'>Continue to the app</Text>
+      </TouchableOpacity>
+      <Text>Or</Text>
+      <TouchableOpacity onPress={navigateToTutorial} className='w-48 p-4 mb-8 text-white rounded'>
+        <Text className='text-center text-white'>Learn how to use the app</Text>
       </TouchableOpacity>
     </View>
   )

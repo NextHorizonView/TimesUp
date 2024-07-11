@@ -9,6 +9,8 @@ const TodayTask = ({ name, category, priority, isDue, due, startTime, isComplete
     const activeStars = new Array(priority).fill(0);
     const inActiveStars = new Array(5 - priority).fill(0);
 
+    console.log(name, category, priority, isDue, due, startTime, isCompleted, navigateToTaskScreen);
+
     return (
         <TouchableOpacity onPress={() => navigateToTaskScreen(category)} className='p-2 my-4 gap-2 rounded-2xl min-h-[180] justify-between mx-2' style={{ backgroundColor: isDue ? '#BB6565' : isCompleted ? '#65BB78' : '#7165BB' }}>
             <View>
