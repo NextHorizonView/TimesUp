@@ -2,9 +2,10 @@ import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite'
 import schema from './models/schema'
 import migrations from './models/migrations'
 import { Database } from '@nozbe/watermelondb'
-import Category from './models/Category'
 import Task from './models/Task'
 import Profile from './models/Profile'
+import Schedule from './models/schedule'
+import Event from './models/Events'
 
 const adapter = new SQLiteAdapter({
     schema,
@@ -17,7 +18,7 @@ const adapter = new SQLiteAdapter({
 
 const database = new Database({
     adapter,
-    modelClasses: [Category, Task, Profile],
+    modelClasses: [Event, Task, Profile, Schedule],
     actionsEnabled: true,
 })
 

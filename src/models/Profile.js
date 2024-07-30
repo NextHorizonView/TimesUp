@@ -1,10 +1,11 @@
 import { Model } from "@nozbe/watermelondb";
-import { field, text } from '@nozbe/watermelondb/decorators'
+import { field, text, date } from '@nozbe/watermelondb/decorators'
 
 export default class Profile extends Model {
-    static table = 'profiles';
-    @text('username') username;
+    static table = 'profile';
+    @text('name') name;
     @field('img_uri') imageUri;
     @field('profession') profession;
-    @field('is_beginner') isBeginner;
+    @field('phone_number') phoneNumber;
+    @date('dob') dob;
 }

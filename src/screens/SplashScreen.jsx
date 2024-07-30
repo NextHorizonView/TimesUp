@@ -12,16 +12,11 @@ const SplashScreen = ({ navigation }) => {
             duration: 1000,
             useNativeDriver: true,
         }).start(async () => {
-            const user = await database.get('profiles').query().fetch();
+            const user = await database.get('profile').query().fetch();
             if (user.length === 0) {
                 navigation.replace('Create Profile');
             } else {
-                if (user[0].isBeginner) {
-                    navigation.replace('Tutorial');
-                } else {
-                    console.log('Main');
-                    navigation.replace('Bottom Tab');
-                }
+                navigation.replace('Bottom Tab');
             }
         });
     };

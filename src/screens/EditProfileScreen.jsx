@@ -1,130 +1,89 @@
-import { View, Text, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useState } from 'react'
 import { Dimensions } from 'react-native'
-import TaskTextBox from '../components/TaskTextBox';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faPen } from '@fortawesome/free-solid-svg-icons';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import database from '../watermellon.config';
-import { faBackward } from '@fortawesome/free-solid-svg-icons/faBackward';
-import { faRightToBracket } from '@fortawesome/free-solid-svg-icons/faRightToBracket';
-import { faLeftLong } from '@fortawesome/free-solid-svg-icons/faLeftLong';
+import { withObservables } from '@nozbe/watermelondb/react';
+import { DateInputField, NumberInputField, TextInputField } from '../components/FormFields';
+import welcomeImg from '../assets/rafiki.png'
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-
-const EditProfile = ({ route, navigation }) => {
-    const { userData, setUserData } = route.params;
-    const [newName, setNewName] = useState(userData.username);
-    const [newProfession, setNewProfession] = useState(userData.profession);
-    const [newImageUri, setNewImageUri] = useState(userData.imageUri);
-    const [image, setImage] = useState('')
-
-    const selectImageHandler = () => {
-        const options = {
-            mediaType: 'photo',
-            maxWidth: 300,
-            maxHeight: 300,
-            quality: 1,
-            includeBase64: true
-        }
-
-        launchImageLibrary(options, (res) => {
-            if (res.didCancel) {
-                console.log('User cancelled image picker');
-                return;
-            } else if (res.errorMessage) {
-                console.log(res.errorMessage);
-                return
-            }
-            setImage(res.assets[0]);
-        })
-    }
-
-    useEffect(() => {
-        setNewImageUri(`data:${image.type};base64,${image.base64}`);
-    }, [image])
-
-    const navigateBack = () => {
-        navigation.navigate('Bottom Tab');
-    }
+const EditProfileScreen = ({ user, navigation }) => {
+    const [name, setName] = useState(user[0].name || '');
+    const [isNameValid, setIsNameValid] = useState(true);
+    const [profession, setProfession] = useState(user[0].profession || '');
+    const [isProfessionValid, setIsProfessionValid] = useState(true);
+    const [phoneNumber, setPhoneNumber] = useState(user[0].phoneNumber || '');
+    const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(true);
+    const [dob, setDob] = useState(user[0].dob || '')
+    const [isDobValid, setIsDobValid] = useState(true)
 
     const saveUser = async () => {
-        if (newName.length == 0) {
-            Toast.show({
-                type: 'error',
-                text1: 'Please enter a username',
-                swipeable: true
-            })
+        if (name.length === 0) {
+            setIsNameValid(false);
+        } if (profession.length === 0) {
+            setIsProfessionValid(false);
+        } if (phoneNumber.length === 0) {
+            setIsPhoneNumberValid(false);
+        } if (dob.length === 0) {
+            setIsDobValid(false);
+        }
+        if (name.length === 0 || profession.length === 0 || phoneNumber.length === 0 || dob.length === 0) {
             return;
         }
-        const existingUser = await database.get('profiles').query().fetch();
 
-        if (existingUser.length > 0) {
-            await database.write(async () => {
-                await existingUser[0].update(user => {
-                    user.username = newName;
-                    user.profession = newProfession;
-                    user.imageUri = newImageUri ? `${newImageUri}` : '';
-                }
-                );
-            })
-        };
+        await database.write(async () => {
+            await user[0].update(user => {
+                user.name = name;
+                user.profession = profession;
+                user.phoneNumber = +phoneNumber;
+                user.dob = dob;
+            }
+            );
+        })
 
-        navigateBack();
+        navigation.navigate('Home Screen');
     }
 
-    useEffect(() => {
-        setNewName(userData.username);
-        setNewProfession(userData.profession);
-        setNewImageUri(userData.imageUri);
-    }, [userData])
-
-
     return (
-        <View className='items-center justify-between flex-1 bg-purple-100'>
-            <View className='flex-row justify-start w-full'>
-                <TouchableOpacity onPress={navigateBack} className='pl-4'>
-                    <FontAwesomeIcon className='mr-20' size={50} color='#EEBA00' icon={faLeftLong} />
+        <View className='flex-1 w-full bg-black pt-14'>
+            <View className='flex-row items-center gap-3 px-8'>
+                <TouchableOpacity onPress={() => navigation.navigate('Display Profile Screen')}>
+                    <FontAwesomeIcon color='#ffffff' size={24} icon={faAngleLeft} />
                 </TouchableOpacity>
+                <Text className='text-2xl font-bold text-white'>Edit Profile</Text>
             </View>
-            <View className='bg-[#4938B5] p-8 rounded-lg flex items-center'>
-                <Text className='text-xl font-bold text-white'>Edit Profile</Text>
-                <View className='items-center mt-4'>
-                    <TouchableOpacity onPress={() => selectImageHandler()}>
-                        <View className='flex-row items-end'>
-                            {
-                                newImageUri ?
-                                    <Image className='w-20 h-20 rounded-xl' source={{ uri: newImageUri }} />
-                                    :
-                                    <Image className='w-20 h-20 rounded-xl' source={require('../assets/placeholderUserImg.png')} />
-                            }
-                            <View className='bg-[#EEBA00] p-2 items-center justify-center rounded-full absolute -right-4'>
-
-                                <FontAwesomeIcon color='white' size={16} icon={faPen} />
-                            </View>
+            <View className='flex-1 w-full mt-4'>
+                <ScrollView contentContainerStyle={{ flex: 1 }} className='w-full'>
+                    <View className='justify-between flex-1 w-full px-12 pb-3'>
+                        <View className='w-full gap-2 pt-4'>
+                            <TextInputField isDarkTheme={true} isValid={isNameValid} setIsValid={setIsNameValid} value={name} setValue={setName} name='Name' />
+                            <TextInputField isDarkTheme={true} isValid={isProfessionValid} setIsValid={setIsProfessionValid} value={profession} setValue={setProfession} name='Profession' />
+                            <NumberInputField isDarkTheme={true} value={`${phoneNumber}`} setValue={setPhoneNumber} isValid={isPhoneNumberValid} setIsValid={setIsPhoneNumberValid} name='Phone Number' />
+                            <DateInputField isDarkTheme={true} value={dob} setValue={setDob} isValid={isDobValid} setIsValid={setIsDobValid} name='Date of birth' />
                         </View>
-                    </TouchableOpacity>
-
-                    <View className=''>
-                        <Text className='mt-2 text-white'>Name</Text>
-                        <TaskTextBox value={newName} setValue={setNewName} isLight={true} />
-                        <Text className='mt-4 text-white'>Profession</Text>
-                        <TaskTextBox value={newProfession} setValue={setNewProfession} isLight={true} />
-
-                        <View className='flex-row justify-between mt-4'>
-                            <TouchableOpacity onPress={saveUser} className='items-center justify-center p-4 bg-[#26252C] rounded-lg'>
+                        <View className='items-center justify-center w-full'>
+                            <Image source={welcomeImg} />
+                            <Text className='mt-4 text-sm font-medium text-center text-white'>Edit your profile.</Text>
+                        </View>
+                        <TouchableOpacity onPress={saveUser} className='bg-[#424242] w-full p-3 rounded-md'>
+                            <View className='items-center justify-center '>
                                 <Text className='text-white'>Save Changes</Text>
-                            </TouchableOpacity>
-                        </View>
-
+                            </View>
+                        </TouchableOpacity>
                     </View>
-
-                </View>
+                </ScrollView>
             </View>
-            <Image className='p-0 m-0' source={require('../assets/editprofile.png')} />
         </View>
     )
 }
 
-export default EditProfile;
+
+const enhance = withObservables([], () => ({
+    user: database.get('profile').query().observeWithColumns(['name', 'profession', 'phone_number', 'dob']),
+}));
+
+const EnhanceEditProfileScreen = enhance(EditProfileScreen);
+
+export default EnhanceEditProfileScreen;
+
