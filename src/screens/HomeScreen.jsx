@@ -32,7 +32,7 @@ const HomeScreen = ({ navigation, user }) => {
                 ref={bottomSheetRef}
                 index={0}
                 snapPoints={snapShot}
-                onChange={(index) => console.log('snapped to', index)}
+                // onChange={(index) => console.log('snapped to', index)}
             >
                 <View className='flex-1 bg-black'>
 
