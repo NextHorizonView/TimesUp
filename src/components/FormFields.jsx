@@ -1,7 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faCalendar, faExclamation } from '@fortawesome/free-solid-svg-icons'
+import { faCalendar, faExclamation, faStar } from '@fortawesome/free-solid-svg-icons'
 import DatePicker from 'react-native-date-picker'
 import { format } from 'date-fns'
 
@@ -94,6 +94,62 @@ export const DateInputField = ({ value, setValue, name, isValid, setIsValid, isD
                 <TouchableOpacity onPress={() => setOpenDate(true)}>
                     <FontAwesomeIcon size={20} icon={faCalendar} color={isValid ? `${isDarkTheme ? '#BDBDBD' : 'black'}` : '#dc2626'} />
                 </TouchableOpacity>
+            </View>
+        </View>
+    )
+}
+
+export const DateTimeInputField = ({ value, setValue, name, isValid, setIsValid, isDarkTheme, maxDate, minDate }) => {
+    const [openDate, setOpenDate] = useState(false);
+
+    return (
+        <View className='w-full'>
+            <DatePicker
+                mode="datetime"
+                modal
+                open={openDate}
+                date={value || new Date()}
+                onConfirm={(selectedDate) => {
+                    setValue(selectedDate);
+                    setOpenDate(false);
+                    if (!isValid) {
+                        setIsValid(true);
+                    }
+                }}
+                onCancel={() => {
+                    setOpenDate(false);
+                    if (!value) {
+                        setIsValid(false);
+                    }
+                }}
+                maximumDate={maxDate || ''}
+                minimumDate={minDate || ''
+                }
+            />
+            <Text className='text-sm font-medium' style={{ color: isDarkTheme ? '#BDBDBD' : 'black' }}>{name}</Text>
+            <View style={{ borderColor: !isValid ? '#dc2626' : `${isDarkTheme ? '#BDBDBD' : 'black'}`, color: isDarkTheme ? '#ffffff' : 'black' }} className='border-[1px] text-sm border-black rounded-xl flex-row justify-between p-3'>
+                <Text className='text-sm' style={{ color: isDarkTheme ? '#ffffff' : 'black' }}>{value ? format(value, 'MMMM d, yyyy h:mm a') : ''}</Text>
+                <TouchableOpacity onPress={() => setOpenDate(true)}>
+                    <FontAwesomeIcon size={20} icon={faCalendar} color={isValid ? `${isDarkTheme ? '#BDBDBD' : 'black'}` : '#dc2626'} />
+                </TouchableOpacity>
+            </View>
+        </View>
+    )
+}
+
+export const PriorityInputField = ({ value, setValue, name }) => {
+    const starsArray = [1, 2, 3, 4, 5];
+    return (
+        <View>
+            <Text className='text-sm font-medium text-black'>{name}</Text>
+            <View className='flex-row gap-1'>
+                {starsArray.map((star, index) => {
+                    return (
+                        <TouchableOpacity key={index} onPress={() => setValue(star)}>
+                            <FontAwesomeIcon size={20} icon={faStar} color={star > value ? '#D9D9D9' : value === 3 ? '#DF9620' : value < 3 ? '#DB4837' : '#15A217'} />
+                        </TouchableOpacity>
+                    )
+                })}
             </View>
         </View>
     )

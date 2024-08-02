@@ -14,7 +14,7 @@ const CalendarScreen = () => {
     const [event, setEvent] = useState(null);
 
     const bottomSheetRef = useRef(null);
-    const snapShot = useMemo(() => ['70%'], []);
+    const snapShot = useMemo(() => ['80%'], []);
 
     return (
         <View className='flex-1 bg-black'>
