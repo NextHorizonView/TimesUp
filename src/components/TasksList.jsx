@@ -54,7 +54,7 @@ const TasksList = ({ bottomSheetRef, tasks, task, setTask }) => {
                     </View>
                 </View>
             </TouchableOpacity>
-            <Modal isVisible={true}>
+            {/* <Modal isVisible={true}>
                 <View className='items-start gap-3 px-6 py-8 mx-4 bg-white rounded-md'>
                     <Text className='font-bold text-[#212121] text-lg'>Mark task as done?</Text>
                     <Text className='text-[#4A4A4A] text-sm'>On marking task as done, it will be removed from the list. Are you sure you want to mark it as done?</Text>
@@ -67,7 +67,7 @@ const TasksList = ({ bottomSheetRef, tasks, task, setTask }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </Modal>
+            </Modal> */}
         </View>
     )
 }
