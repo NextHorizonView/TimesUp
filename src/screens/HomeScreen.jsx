@@ -3,13 +3,16 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { withObservables } from '@nozbe/watermelondb/react';
 import database from '../watermellon.config';
 import placeholderImage from '../assets/placeholder-image.png';
-import BottomSheet from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import TasksList from '../components/TasksList';
+import TaskForm from '../components/TaskForm';
 
 const HomeScreen = ({ navigation, user }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [task, setTask] = useState(null);
     const [userData, setUserData] = useState(user[0]);
     const bottomSheetRef = useRef(null);
-    const snapShot = useMemo(() => ['25%', '50%', '80%'], []);
+    const snapShot = useMemo(() => ['80%'], []);
 
     useEffect(() => {
         if (user.length > 0) {
@@ -27,20 +30,32 @@ const HomeScreen = ({ navigation, user }) => {
                     <Text className='text-lg font-semibold text-white'>Welcome {userData.name}!</Text>
                 </View>
             </View>
-            <View className='flex-1 bg-white rounded-t-3xl' />
+            <TasksList task={task} setTask={setTask} bottomSheetRef={bottomSheetRef} />
             <BottomSheet
                 ref={bottomSheetRef}
-                index={0}
+                index={-1}
                 snapPoints={snapShot}
                 // onChange={(index) => console.log('snapped to', index)}
+                enablePanDownToClose={true}
+                backdropComponent={renderBackdrop}
             >
-                <View className='flex-1 bg-black'>
-
+                <View className='flex-1 bg-white'>
+                    <TaskForm task={task} setTask={setTask} bottomSheetRef={bottomSheetRef} />
                 </View>
             </BottomSheet>
         </View>
     );
 };
+
+
+const renderBackdrop = (backdropProps) => (
+    <BottomSheetBackdrop
+        {...backdropProps}
+        enableTouchThrough={false} // Ensure touch through is disabled for backdrop interaction
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+    />
+);
 
 const enhance = withObservables([], () => ({
     user: database.get('profile').query().observeWithColumns(['name', 'profession', 'img_uri', 'phone_number', 'dob']),

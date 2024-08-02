@@ -10,19 +10,16 @@ const EventForm = ({ event, bottomSheetRef, selectedDate }) => {
     const [isDescriptionValid, setIsDescriptionValid] = useState(true);
     const [date, setDate] = useState(selectedDate || '');
     const [isDateValid, setIsDateValid] = useState(true);
-    const [isEdit, setIsEdit] = useState(false);
 
     useEffect(() => {
         if (event) {
             setName(event.name);
             setDescription(event.description);
             setDate(event.date);
-            setIsEdit(true);
         } else {
             setName('');
             setDescription('');
             setDate(selectedDate);
-            setIsEdit(false);
         }
     }, [event])
 
@@ -84,20 +81,49 @@ const EventForm = ({ event, bottomSheetRef, selectedDate }) => {
         });
     }
 
+    const deleteEvent = async () => {
+        await database.write(async () => {
+            await event.destroyPermanently()
+                .then(() => {
+                    bottomSheetRef.current?.close();
+                    setName('');
+                    setDescription('');
+                    setDate('');
+                })
+                .catch(err => console.log(err));
+        });
+    }
+
     return (
         <View className='flex-1 p-7'>
             <Text className='text-lg font-bold text-black'>Event</Text>
             <View className='justify-between flex-1 gap-4 mt-4'>
-                <View className=''>
+                <View className='gap-2'>
                     <TextInputField value={name} setValue={setName} name='Event Name' isValid={isNameValid} setIsValid={setIsNameValid} isDarkTheme={false} />
                     <TextInputField value={description} setValue={setDescription} name='Description' isValid={isDescriptionValid} setIsValid={setIsDescriptionValid} isDarkTheme={false} />
                     <DateInputField minDate={new Date()} maxDate={maxDate} isMinDate={false} value={date} setValue={setDate} name='Date' isValid={isDateValid} setIsValid={setIsDateValid} isDarkTheme={false} />
                 </View>
-                <TouchableOpacity activeOpacity={0.7} onPress={isEdit ? updateEvent : saveEvent}>
-                    <View className='items-center justify-center p-3 bg-[#424242] rounded-xl'>
-                        <Text className='text-lg font-bold text-white'>{isEdit ? 'Update' : 'Save'}</Text>
+                {event ?
+                    <View className='gap-2'>
+                        <TouchableOpacity activeOpacity={0.7} onPress={updateEvent}>
+                            <View className='items-center justify-center p-3 bg-[#424242] rounded-xl'>
+                                <Text className='text-lg font-bold text-white'>Update</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity activeOpacity={0.7} onPress={deleteEvent}>
+                            <View className='items-center justify-center p-3 bg-red-500 rounded-xl'>
+                                <Text className='text-lg font-bold text-white'>Delete</Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
-                </TouchableOpacity>
+                    :
+                    <TouchableOpacity activeOpacity={0.7} onPress={saveEvent}>
+                        <View className='items-center w-full justify-center p-3 bg-[#424242] rounded-xl'>
+                            <Text className='text-lg font-bold text-white'>Save</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                }
             </View>
         </View>
     )
