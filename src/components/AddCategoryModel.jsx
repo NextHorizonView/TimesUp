@@ -41,7 +41,7 @@ const AddCategoryModal = ({ isModalOpen, setIsModalOpen }) => {
 
     return (
         <View>
-            <Modal isVisible={isModalOpen}>
+            {/* <Modal isVisible={isModalOpen}>
                 <Toast />
                 <View className='px-6 py-8 mx-2 bg-white rounded-3xl'>
                     <Text className='mb-2 text-black'>Category name</Text>
@@ -66,7 +66,7 @@ const AddCategoryModal = ({ isModalOpen, setIsModalOpen }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </Modal>
+            </Modal> */}
         </View>
     )
 }
