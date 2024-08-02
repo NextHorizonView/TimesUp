@@ -61,7 +61,7 @@ export const NumberInputField = ({ value, setValue, name, isValid, setIsValid, i
     )
 }
 
-export const DateInputField = ({ value, setValue, name, isValid, setIsValid, isDarkTheme }) => {
+export const DateInputField = ({ value, setValue, name, isValid, setIsValid, isDarkTheme, maxDate, minDate }) => {
     const [openDate, setOpenDate] = useState(false);
 
     return (
@@ -72,6 +72,7 @@ export const DateInputField = ({ value, setValue, name, isValid, setIsValid, isD
                 open={openDate}
                 date={value || new Date()}
                 onConfirm={(selectedDate) => {
+                    selectedDate.setHours(0, 0, 0, 0);
                     setValue(selectedDate);
                     setOpenDate(false);
                     if (!isValid) {
@@ -84,7 +85,8 @@ export const DateInputField = ({ value, setValue, name, isValid, setIsValid, isD
                         setIsValid(false);
                     }
                 }}
-                maximumDate={new Date()}
+                maximumDate={maxDate || new Date()}
+                minimumDate={minDate || ''}
             />
             <Text className='text-sm font-medium' style={{ color: isDarkTheme ? '#BDBDBD' : 'black' }}>{name}</Text>
             <View style={{ borderColor: !isValid ? '#dc2626' : `${isDarkTheme ? '#BDBDBD' : 'black'}`, color: isDarkTheme ? '#ffffff' : 'black' }} className='border-[1px] text-sm border-black rounded-xl flex-row justify-between p-3'>
