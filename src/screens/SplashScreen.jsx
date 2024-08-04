@@ -2,6 +2,7 @@ import { View, Text, Animated } from 'react-native'
 import React, { useRef, useEffect } from 'react'
 import LottieView from 'lottie-react-native'
 import database from '../watermellon.config'
+import logoImg from '../assets/logo.png'
 
 const SplashScreen = ({ navigation }) => {
     const imageOpacity = useRef(new Animated.Value(0)).current;
@@ -22,15 +23,13 @@ const SplashScreen = ({ navigation }) => {
     };
 
 
+    useEffect(() => {
+        handleAnimationFinish();
+    }, [])
+
     return (
-        <View className='items-center flex-1 pt-24 bg-purple-100'>
-            <LottieView onAnimationFinish={() => { handleAnimationFinish() }} autoPlay loop={false} style={{ width: 240, height: 240 }} source={require('../assets/splashScreenAnim.json')} />
-            <Animated.Text
-                className='mx-4 mt-12 text-5xl font-[900] text-center text-[#4938B5]'
-                style={{ opacity: imageOpacity, marginTop: 48 }}
-            >
-                Taskify
-            </Animated.Text>
+        <View className='items-center justify-center flex-1 bg-black'>
+            <Animated.Image resizeMode="contain" className='' style={{ opacity: imageOpacity }} source={logoImg} />
         </View>
     )
 }

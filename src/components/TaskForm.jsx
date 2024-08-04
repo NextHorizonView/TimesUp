@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { DateInputField, DateTimeInputField, PriorityInputField, TextInputField } from './FormFields';
+import { DateTimeInputField, PriorityInputField, TextInputField } from './FormFields';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import database from '../watermellon.config';
 

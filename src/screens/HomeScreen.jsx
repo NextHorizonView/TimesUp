@@ -1,5 +1,5 @@
-import { View, Text, Image, TouchableOpacity, Animated, Button } from 'react-native';
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { withObservables } from '@nozbe/watermelondb/react';
 import database from '../watermellon.config';
 import placeholderImage from '../assets/placeholder-image.png';
@@ -8,7 +8,6 @@ import TasksList from '../components/TasksList';
 import TaskForm from '../components/TaskForm';
 
 const HomeScreen = ({ navigation, user }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [task, setTask] = useState(null);
     const [userData, setUserData] = useState(user[0]);
     const bottomSheetRef = useRef(null);

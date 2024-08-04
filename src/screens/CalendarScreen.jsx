@@ -2,9 +2,7 @@ import { View } from 'react-native'
 import React, { useState, useRef, useMemo } from 'react'
 
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-import database from '../watermellon.config'
 import EventForm from '../components/EventForm'
-import { withObservables } from '@nozbe/watermelondb/react'
 import CalendarEvents from '../components/CalendarEvents';
 
 

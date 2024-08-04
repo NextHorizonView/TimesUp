@@ -122,7 +122,6 @@ const EventForm = ({ event, bottomSheetRef, selectedDate }) => {
                             <Text className='text-lg font-bold text-white'>Save</Text>
                         </View>
                     </TouchableOpacity>
-
                 }
             </View>
         </View>
