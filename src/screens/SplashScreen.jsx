@@ -13,12 +13,12 @@ const SplashScreen = ({ navigation }) => {
             duration: 1000,
             useNativeDriver: true,
         }).start(async () => {
-            // const user = await database.get('profile').query().fetch();
-            // if (user.length === 0) {
-            //     navigation.replace('Create Profile');
-            // } else {
-            //     navigation.replace('Bottom Tab');
-            // }
+            const user = await database.get('profile').query().fetch();
+            if (user.length === 0) {
+                navigation.replace('Create Profile');
+            } else {
+                navigation.replace('Bottom Tab');
+            }
         });
     };
 
