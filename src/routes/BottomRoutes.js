@@ -5,6 +5,7 @@ import CalendarScreen from '../screens/CalendarScreen'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faHome, faAdd, faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { Text } from 'react-native'
+import ScheduleScreen from '../screens/ScheduleScreen'
 
 const Tab = createBottomTabNavigator();
 
@@ -23,7 +24,7 @@ function BottomTab() {
                 headerTitle: 'Home',
             }} />
 
-            <Tab.Screen name="Add Task" component={AddTaskScreen} options={{
+            <Tab.Screen name="Schedule" component={ScheduleScreen} options={{
                 tabBarIcon: ({ color, size }) => <FontAwesomeIcon size={size} color={color} icon={faAdd} />
             }} />
 
