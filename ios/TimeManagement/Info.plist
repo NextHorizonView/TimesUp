@@ -26,16 +26,15 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-	  <!-- Do not change NSAllowsArbitraryLoads to true, or you will risk app rejection! -->
 		<key>NSAllowsArbitraryLoads</key>
 		<false/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
-		<key>NSPhotoLibraryUsageDescription</key>
-		<true/>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	 <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Your location is needed to provide location-based functionalities.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Your photos are needed to upload and attach to your reports.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
