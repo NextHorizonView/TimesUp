@@ -97,6 +97,7 @@ export async function sendCongratulatoryMessage() {
 
 
 export async function scheduleEventNotification(notificationId, eventName, eventDate) {
+    await notifee.requestPermission();
     const eventDateObj = new Date(eventDate);
     eventDateObj.setHours(0, 0, 0, 0); // Normalize the date
 
