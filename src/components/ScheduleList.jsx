@@ -24,18 +24,18 @@ const ScheduleList = ({ setSchedule, bottomSheetRef, schedules }) => {
         now.setHours(0, 0, 0, 0);
         return now;
     };
-    
+
     // Delete schedules before today
     const deleteSchedulesBeforeToday = async () => {
         const startOfToday = getStartOfToday();
-    
+
         const schedulesToDelete = await database
             .get('schedule')
             .query(
                 Q.where('date', Q.lt(startOfToday.getTime()))
             )
             .fetch();
-    
+
         if (schedulesToDelete.length > 0) {
             await database.write(async () => {
                 await database.batch(
@@ -50,7 +50,7 @@ const ScheduleList = ({ setSchedule, bottomSheetRef, schedules }) => {
     }, [schedules]);
 
     return (
-        <View className='flex-1 pt-6 pb-5 bg-white px-7 rounded-t-2xl'>
+        <View className='flex-1 pt-6 bg-white px-7 rounded-t-2xl'>
             <Text className='text-lg font-bold text-black'>Today's Schedule</Text>
             <ScrollView showsVerticalScrollIndicator={false}>
                 {
