@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import database from '../watermellon.config';
 import { DateInputField, TextInputField } from '../components/FormFields';
+import { cancelNotification, scheduleEventNotification, updateEventNotification } from '../utils/notification';
 
 const EventForm = ({ event, bottomSheetRef, selectedDate }) => {
     const [name, setName] = useState('');
@@ -21,7 +22,7 @@ const EventForm = ({ event, bottomSheetRef, selectedDate }) => {
             setDescription('');
             setDate(selectedDate);
         }
-    }, [event])
+    }, [event, selectedDate])
 
 
     const maxDate = new Date();
@@ -44,11 +45,13 @@ const EventForm = ({ event, bottomSheetRef, selectedDate }) => {
                 event.description = description;
                 event.date = date;
             })
-                .then(() => {
+                .then((event) => {
                     bottomSheetRef.current?.close();
                     setName('');
                     setDescription('');
-                    setDate('');
+                    setIsNameValid(true);
+                    setIsDescriptionValid(true);
+                    scheduleEventNotification(event.id, name, date);
                 })
                 .catch(err => console.log(err));
         });
@@ -71,11 +74,9 @@ const EventForm = ({ event, bottomSheetRef, selectedDate }) => {
                 event.description = description;
                 event.date = date;
             })
-                .then(() => {
+                .then((event) => {
                     bottomSheetRef.current?.close();
-                    setName('');
-                    setDescription('');
-                    setDate('');
+                    updateEventNotification(event.id, name, date);
                 })
                 .catch(err => console.log(err));
         });
@@ -84,14 +85,17 @@ const EventForm = ({ event, bottomSheetRef, selectedDate }) => {
     const deleteEvent = async () => {
         await database.write(async () => {
             await event.destroyPermanently()
-                .then(() => {
+                .then((event) => {
                     bottomSheetRef.current?.close();
                     setName('');
                     setDescription('');
-                    setDate('');
+                    setIsNameValid(true);
+                    setIsDescriptionValid(true);
+                    console.log(event.id);
                 })
                 .catch(err => console.log(err));
         });
+        cancelNotification(event.id);
     }
 
     return (
