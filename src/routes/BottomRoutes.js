@@ -1,10 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomeStack from './HomeRoutes'
-import AddTaskScreen from '../screens/AddTaskScreen'
 import CalendarScreen from '../screens/CalendarScreen'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faHome, faAdd, faCalendar } from '@fortawesome/free-solid-svg-icons'
-import { Text } from 'react-native'
 import ScheduleScreen from '../screens/ScheduleScreen'
 
 const Tab = createBottomTabNavigator();

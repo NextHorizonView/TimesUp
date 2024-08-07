@@ -1,9 +1,6 @@
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useState } from 'react'
-import TaskTextBox from '../components/TaskTextBox'
 import database from '../watermellon.config';
-import { launchImageLibrary } from 'react-native-image-picker'
-import Toast from 'react-native-toast-message';
 import logoImg from '../assets/logo.png'
 import { TextInputField, NumberInputField, DateInputField } from '../components/FormFields';
 

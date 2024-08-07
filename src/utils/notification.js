@@ -94,3 +94,85 @@ export async function sendCongratulatoryMessage() {
         trigger,
     );
 }
+
+
+export async function scheduleEventNotification(notificationId, eventName, eventDate) {
+    const eventDateObj = new Date(eventDate);
+    eventDateObj.setHours(0, 0, 0, 0); // Normalize the date
+
+    // Calculate the trigger date (one day before the event)
+    const triggerDate = new Date(eventDateObj);
+    triggerDate.setDate(triggerDate.getDate() - 1);
+
+    // If the event is less than one day away, notify instantaneously
+    if (triggerDate < new Date()) {
+        triggerDate.setTime(Date.now() + 30000);
+    }
+
+    console.log(triggerDate);
+    // Create a timestamp trigger
+    const trigger = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: triggerDate.getTime(),
+    };
+    const channelId = await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+    });
+
+    // Schedule the notification
+    await notifee.createTriggerNotification(
+        {
+            id: `timeStamp`,
+            title: 'Reminder!',
+            body: `Event ${eventName} is tomorrow!`,
+            android: {
+                channelId,
+                pressAction: {
+                    id: 'default',
+                },
+            },
+        },
+        trigger,
+    );
+
+    console.log(`Notification scheduled with ID: ${notificationId}`);
+}
+
+export const updateEventNotification = (id, eventName, eventDate) => {
+    const eventDateObj = new Date(eventDate);
+    eventDateObj.setHours(0, 0, 0, 0); // Normalize the date
+
+    // Calculate the trigger date (one day before the event)
+    const triggerDate = new Date(eventDateObj);
+    triggerDate.setDate(triggerDate.getDate() - 1);
+
+    // If the event is less than one day away, notify instantaneously
+    if (triggerDate < new Date()) {
+        triggerDate.setTime(Date.now() + 30000);
+    }
+
+    // Create a timestamp trigger
+    const trigger = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: triggerDate.getTime(),
+    };
+
+    // Schedule the notification
+    notifee.createTriggerNotification(
+        {
+            id: `${id}`,
+            title: 'Reminder!',
+            body: `Event ${eventName} is tomorrow!`,
+            android: {
+                channelId: 'default',
+                pressAction: {
+                    id: 'default',
+                },
+            },
+        },
+        trigger,
+    );
+
+    console.log(`Notification updated with ID: ${id}`);
+}
