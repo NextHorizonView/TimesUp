@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import database from '../watermellon.config';
 import { withObservables } from '@nozbe/watermelondb/react';
-import { DateInputField, NumberInputField, TextInputField } from '../components/FormFields';
+import { DateInputField, NumberInputField, TextInputField, PhoneInputField } from '../components/FormFields';
 import welcomeImg from '../assets/rafiki.png'
 
 const EditProfileScreen = ({ user, navigation }) => {
@@ -13,6 +13,9 @@ const EditProfileScreen = ({ user, navigation }) => {
     const [isNameValid, setIsNameValid] = useState(true);
     const [profession, setProfession] = useState(user[0].profession || '');
     const [isProfessionValid, setIsProfessionValid] = useState(true);
+    const [selectedCountry, setSelectedCountry] = useState(null);
+    const [cca2, setCca2] = useState(user[0].countryCode || '');
+    const [callingCode, setCallingCode] = useState(user[0].countryCode || '');
     const [phoneNumber, setPhoneNumber] = useState(user[0].phoneNumber || '');
     const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(true);
     const [dob, setDob] = useState(user[0].dob || '')
@@ -36,7 +39,8 @@ const EditProfileScreen = ({ user, navigation }) => {
             await user[0].update(user => {
                 user.name = name;
                 user.profession = profession;
-                user.phoneNumber = +phoneNumber;
+                user.phoneNumber = phoneNumber;
+                user.countryCode = cca2;
                 user.dob = dob;
             }
             );
@@ -59,7 +63,7 @@ const EditProfileScreen = ({ user, navigation }) => {
                         <View className='w-full gap-2 pt-4'>
                             <TextInputField isDarkTheme={true} isValid={isNameValid} setIsValid={setIsNameValid} value={name} setValue={setName} name='Name' />
                             <TextInputField isDarkTheme={true} isValid={isProfessionValid} setIsValid={setIsProfessionValid} value={profession} setValue={setProfession} name='Profession' />
-                            <NumberInputField isDarkTheme={true} value={`${phoneNumber}`} setValue={setPhoneNumber} isValid={isPhoneNumberValid} setIsValid={setIsPhoneNumberValid} name='Phone Number' />
+                            <PhoneInputField isDarkTheme={true} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} isPhoneNumberValid={isPhoneNumberValid} setIsPhoneNumberValid={setIsPhoneNumberValid} cca2={cca2} setCca2={setCca2} callingCode={callingCode} setCallingCode={setCallingCode} />
                             <DateInputField isDarkTheme={true} value={dob} setValue={setDob} isValid={isDobValid} setIsValid={setIsDobValid} name='Date of birth' />
                         </View>
                         <View className='items-center justify-center w-full'>

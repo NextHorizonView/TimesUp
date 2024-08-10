@@ -83,7 +83,9 @@ const ScheduleList = ({ setSchedule, bottomSheetRef, schedules }) => {
 const enhance = withObservables([], () => {
     return {
         schedules: database.get('schedule').query(
-            Q.sortBy('date', Q.desc),
+            Q.sortBy('date', Q.asc),
+            Q.sortBy('start_time', Q.asc),
+            Q.sortBy('end_time', Q.asc),
         ).observeWithColumns(['name', 'date', 'start_time', 'end_time'])
     }
 });

@@ -9,7 +9,8 @@ export default appSchema({
                 { name: 'name', type: 'string' },
                 { name: 'img_uri', type: 'string' },
                 { name: 'profession', type: 'string' },
-                { name: 'phone_number', type: 'number' },
+                { name: 'phone_number', type: 'string' },
+                { name: 'country_code', type: 'string' },
                 { name: 'dob', type: 'number' },
             ]
         }),

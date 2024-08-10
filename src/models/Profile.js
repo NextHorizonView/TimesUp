@@ -7,5 +7,6 @@ export default class Profile extends Model {
     @field('img_uri') imageUri;
     @field('profession') profession;
     @field('phone_number') phoneNumber;
+    @field('country_code') countryCode;
     @date('dob') dob;
 }

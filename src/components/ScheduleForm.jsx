@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { DateInputField, TextInputField, TimeInputField } from './FormFields';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import database from '../watermellon.config';
+import { cancelNotification, scheduleNotification, scheduleTaskNotification, updateScheduleNotification, updateTaskNotification } from '../utils/notification';
 
 const ScheduleForm = ({ schedule, setSchedule, bottomSheetRef }) => {
     const [name, setName] = useState('');
@@ -27,7 +28,7 @@ const ScheduleForm = ({ schedule, setSchedule, bottomSheetRef }) => {
             setStartTime(new Date());
             setEndTime(new Date(date.getTime() + 60 * 60 * 1000));
         }
-    }, []);
+    }, [schedule]);
 
     useEffect(() => {
         if (startTime && startTime >= endTime) {
@@ -62,12 +63,12 @@ const ScheduleForm = ({ schedule, setSchedule, bottomSheetRef }) => {
                 schedule.startTime = startTime;
                 schedule.endTime = endTime;
             })
-                .then(() => {
+                .then((schedule) => {
                     bottomSheetRef.current?.close();
                     setName('');
-                    setDate('');
-                    setStartTime('');
-                    setEndTime('');
+                    setIsNameValid(true);
+                    console.log(schedule.startTime.getTime());
+                    scheduleTaskNotification(schedule.id, `Schedule: ${name} starts soon`, schedule.startTime);
                 })
                 .catch(err => console.log(err));
         });
@@ -94,12 +95,9 @@ const ScheduleForm = ({ schedule, setSchedule, bottomSheetRef }) => {
                 schedule.startTime = startTime;
                 schedule.endTime = endTime;
             })
-                .then(() => {
+                .then((schedule) => {
                     bottomSheetRef.current?.close();
-                    setName('');
-                    setDate('');
-                    setStartTime('');
-                    setEndTime('');
+                    updateTaskNotification(schedule.id, `Schedule: ${name} starts soon`, schedule.startTime);
                 })
                 .catch(err => console.log(err));
         });
@@ -111,9 +109,12 @@ const ScheduleForm = ({ schedule, setSchedule, bottomSheetRef }) => {
                 .then(() => {
                     bottomSheetRef.current?.close();
                     setName('');
-                    setDate('');
+                    setDate(new Date());
                     setStartTime('');
                     setEndTime('');
+                    setIsNameValid(true);
+                    cancelNotification(schedule.id);
+
                 })
                 .catch(err => console.log(err));
         });
@@ -127,7 +128,7 @@ const ScheduleForm = ({ schedule, setSchedule, bottomSheetRef }) => {
                     <TextInputField name='Schedule Name' value={name} setValue={setName} isValid={isNameValid} setIsValid={setIsNameValid} />
                     <DateInputField name='Schedule Date' value={date} setValue={setDate} isValid={isDateValid} setIsValid={setIsDateValid} />
                     <TimeInputField name='Start Time' value={startTime} setValue={setStartTime} isValid={isStartTimeValid} setIsValid={setIsStartTimeValid} />
-                    <TimeInputField name='End Time' value={endTime} setValue={setEndTime} isValid={isEndTimeValid} setIsValid={setIsEndTimeValid} />
+                    <TimeInputField minTime={startTime} name='End Time' value={endTime} setValue={setEndTime} isValid={isEndTimeValid} setIsValid={setIsEndTimeValid} />
                 </View>
             </View>
             {schedule ?

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { DateTimeInputField, PriorityInputField, TextInputField } from './FormFields';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import database from '../watermellon.config';
+import { cancelNotification, scheduleTaskNotification, updateTaskNotification } from '../utils/notification';
+import { set } from 'date-fns';
 
 const TaskForm = ({ task, bottomSheetRef }) => {
     const [name, setName] = useState('');
@@ -18,10 +20,12 @@ const TaskForm = ({ task, bottomSheetRef }) => {
             setName(task.name);
             setDescription(task.description);
             setPriority(task.priority);
+            setDueDate(task.dueDate);
         } else {
             setName('');
             setDescription('');
             setPriority(1);
+            setDueDate(new Date());
         }
     }, [task])
 
@@ -40,12 +44,17 @@ const TaskForm = ({ task, bottomSheetRef }) => {
                 task.name = name;
                 task.description = description;
                 task.priority = priority;
+                task.dueDate = dueDate;
             })
-                .then(() => {
+                .then((task) => {
                     bottomSheetRef.current?.close();
+                    scheduleTaskNotification(task.id, `Task: ${name} dues soon`, task.dueDate);
                     setName('');
                     setDescription('');
                     setPriority(1);
+                    setDueDate(new Date());
+                    setIsNameValid(true);
+                    setIsDescriptionValid(true);
                 })
                 .catch(err => console.log(err));
         });
@@ -66,12 +75,11 @@ const TaskForm = ({ task, bottomSheetRef }) => {
                 task.name = name;
                 task.description = description;
                 task.priority = priority;
+                task.dueDate = dueDate
             })
-                .then(() => {
+                .then((task) => {
                     bottomSheetRef.current?.close();
-                    setName('');
-                    setDescription('');
-                    setPriority(1);
+                    updateTaskNotification(task.id, `Task: ${name} dues soon`, dueDate);
                 })
                 .catch(err => console.log(err));
         });
@@ -85,6 +93,7 @@ const TaskForm = ({ task, bottomSheetRef }) => {
                     setName('');
                     setDescription('');
                     setPriority(1);
+                    cancelNotification(task.id);
                 })
                 .catch(err => console.log(err));
         });
@@ -99,13 +108,28 @@ const TaskForm = ({ task, bottomSheetRef }) => {
                     <PriorityInputField value={priority} setValue={setPriority} name='Task priority' />
                     <TextInputField value={name} setValue={setName} name='Task name' isValid={isNameValid} setIsValid={setIsNameValid} isDarkTheme={false} />
                     <TextInputField value={description} setValue={setDescription} name='Task description' isValid={isDescriptionValid} setIsValid={setIsDescriptionValid} isDarkTheme={false} />
-                    <DateTimeInputField value={dueDate} setValue={setDueDate} name='Task Due Date' minDate={dueDate} isValid={isDueDateValid} setIsValid={setIsDueDateValid} />
+                    <DateTimeInputField value={dueDate} setValue={setDueDate} name='Task Due Date' minDate={new Date()} isValid={isDueDateValid} setIsValid={setIsDueDateValid} />
                 </View>
-                <TouchableOpacity activeOpacity={0.7} onPress={task ? updateTask : saveTask}>
-                    <View className='items-center justify-center p-3 bg-[#424242] rounded-xl'>
-                        <Text className='text-lg font-bold text-white'>{task ? 'Update' : 'Save'}</Text>
+                {task ?
+                    <View className='gap-2'>
+                        <TouchableOpacity activeOpacity={0.7} onPress={updateTask}>
+                            <View className='items-center justify-center p-3 bg-[#424242] rounded-xl'>
+                                <Text className='text-lg font-bold text-white'>Update</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity activeOpacity={0.7} onPress={deleteTask}>
+                            <View className='items-center justify-center p-3 bg-red-500 rounded-xl'>
+                                <Text className='text-lg font-bold text-white'>Delete</Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
-                </TouchableOpacity>
+                    :
+                    <TouchableOpacity activeOpacity={0.7} onPress={saveTask}>
+                        <View className='items-center w-full justify-center p-3 bg-[#424242] rounded-xl'>
+                            <Text className='text-lg font-bold text-white'>Save</Text>
+                        </View>
+                    </TouchableOpacity>
+                }
             </View>
         </View>
     )

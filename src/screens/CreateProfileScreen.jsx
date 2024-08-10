@@ -2,31 +2,37 @@ import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import database from '../watermellon.config';
 import logoImg from '../assets/logo.png'
-import { TextInputField, NumberInputField, DateInputField } from '../components/FormFields';
+import { TextInputField, NumberInputField, DateInputField, PhoneInputField } from '../components/FormFields';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import { set } from 'date-fns';
 
 const CreateProfileScreen = ({ navigation }) => {
   const [name, setName] = useState('');
   const [isNameValid, setIsNameValid] = useState(true);
   const [profession, setProfession] = useState('');
   const [isProfessionValid, setIsProfessionValid] = useState(true);
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(true);
   const [dob, setDob] = useState('')
   const [isDobValid, setIsDobValid] = useState(true)
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [cca2, setCca2] = useState('');
+  const [callingCode, setCallingCode] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(true);
 
   const saveUser = async () => {
     if (name.length === 0) {
       setIsNameValid(false);
     } if (profession.length === 0) {
       setIsProfessionValid(false);
-    } if (phoneNumber.length === 0) {
+    } if (phoneNumber.length === 0 || cca2.length === 0) {
       setIsPhoneNumberValid(false);
     } if (dob.length === 0) {
       setIsDobValid(false);
     }
-    if (name.length === 0 || profession.length === 0 || phoneNumber.length === 0 || dob.length === 0) {
+    if (name.length === 0 || profession.length === 0 || phoneNumber.length === 0 || dob.length === 0 || cca2.length === 0) {
       return;
     }
+
     const existingUser = await database.get('profile').query().fetch();
     await database.write(async () => {
       if (existingUser.length > 0) {
@@ -35,13 +41,26 @@ const CreateProfileScreen = ({ navigation }) => {
       await database.get('profile').create(user => {
         user.name = name;
         user.profession = profession;
-        user.phoneNumber = +phoneNumber;
+        user.phoneNumber = phoneNumber;
+        user.countryCode = selectedCountry.cca2;
         user.dob = dob;
       })
         .then(() => navigation.replace('Bottom Tab'))
-        .catch(err => console.log(err));
+        .catch(err => {
+          console.log(name, profession, phoneNumber, selectedCountry.cca2, dob);
+          console.log(err)
+        });
     });
   };
+
+  function handleSelectedCountry(country) {
+    setSelectedCountry(country);
+  }
+
+  function handleInputValue(phoneNumber) {
+    setPhoneInput(phoneNumber);
+  }
+
 
   return (
     <View className='justify-end flex-1 bg-[#242424]'>
@@ -55,7 +74,7 @@ const CreateProfileScreen = ({ navigation }) => {
             <View className='w-full'>
               <TextInputField isValid={isNameValid} setIsValid={setIsNameValid} value={name} setValue={setName} name='Name' />
               <TextInputField isValid={isProfessionValid} setIsValid={setIsProfessionValid} value={profession} setValue={setProfession} name='Profession' />
-              <NumberInputField value={phoneNumber} setValue={setPhoneNumber} isValid={isPhoneNumberValid} setIsValid={setIsPhoneNumberValid} name='Phone Number' />
+              <PhoneInputField isDarkTheme={false} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} isPhoneNumberValid={isPhoneNumberValid} setIsPhoneNumberValid={setIsPhoneNumberValid} cca2={cca2} setCca2={setCca2} callingCode={callingCode} setCallingCode={setCallingCode} />
               <DateInputField value={dob} setValue={setDob} isValid={isDobValid} setIsValid={setIsDobValid} name='Date of birth' />
             </View>
             <View className='w-full'>
