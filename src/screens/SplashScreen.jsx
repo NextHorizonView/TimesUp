@@ -17,8 +17,8 @@ const SplashScreen = ({ navigation }) => {
             if (user.length === 0) {
                 navigation.replace('Create Profile');
             } else {
-                // navigation.replace('Create Profile');
-                navigation.replace('Bottom Tab');
+                navigation.replace('Create Profile');
+                // navigation.replace('Bottom Tab');
             }
         });
     };
