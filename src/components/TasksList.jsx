@@ -6,15 +6,13 @@ import { withObservables } from '@nozbe/watermelondb/react'
 import database from '../watermellon.config'
 import { Q } from '@nozbe/watermelondb'
 import Modal from 'react-native-modal'
-import LottieView from 'lottie-react-native'
+import { format } from 'date-fns'
 
 const starsArray = [1, 2, 3, 4, 5];
 
 const TasksList = ({ bottomSheetRef, tasks, setTask }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectTask, setSelectTask] = useState(null);
-    const tickAnimationRef = useRef(null);
-    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const openBottomSheet = () => {
         setTask(null);
         bottomSheetRef.current?.expand()
@@ -36,62 +34,54 @@ const TasksList = ({ bottomSheetRef, tasks, setTask }) => {
         });
     };
 
-    const handleAnimationFinish = () => {
-        setIsButtonDisabled(false); // Re-enable the button
-        onCompleteTask(); // Proceed with task deletion
-    };
-
-    const handleAnimationStart = () => {
-        setIsModalVisible(false); // Close the modal
-        setIsButtonDisabled(true); // Disable the button
-        tickAnimationRef.current.play(); // Start the animation
-    };
-
     onCancelTaskComplete = () => {
         setIsModalVisible(false);
         setSelectTask(null);
+    }
+
+    function formatTime(date) {
+        return date.toLocaleTimeString([], {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+        });
     }
 
     return (
         <View className='flex-1 pt-6 pb-5 bg-white px-7 rounded-t-2xl'>
             <Text className='text-lg font-bold text-black'>Today's Task</Text>
             <ScrollView showsVerticalScrollIndicator={false}>
-                {tasks.map(task => (
-                    <TouchableOpacity key={task.id} onPress={() => {
-                        setTask(task);
-                        bottomSheetRef.current?.expand();
-                    }} activeOpacity={0.7}>
-                        <View className='bg-[#F2F2F2] mb-3 p-6 rounded-[28px] flex-row items-start gap-2 border-b-2 border-[#DBBEBE]'>
-                            <TouchableOpacity disabled={isButtonDisabled} className='mt-4' onPress={() => onSelectTask(task)}>
-                                <View className='bg-[#BDBDBD] items-center justify-center w-5 h-5 rounded-full mt-2'>
-                                    <LottieView
-                                        ref={tickAnimationRef}
-                                        autoPlay={false} // Disable auto-play
-                                        loop={false}
-                                        source={require('../assets/tickAnimation.json')}
-                                        style={{ width: 35, height: 35 }}
-                                        onAnimationFinish={handleAnimationFinish} // Set the callback
-                                    />
-                                </View>
-                            </TouchableOpacity>
-                            <View>
-                                <Text className='text-lg text-[#464242] font-semibold'>{task.name}</Text>
-                                <Text className='text-sm text-[#8C8080] '>{task.description}</Text>
-                                <View className='mt-2'>
-                                    <View className='flex-row gap-1'>
-                                        {starsArray.map((star, index) => {
-                                            return (
-                                                <View key={index}>
-                                                    <FontAwesomeIcon size={20} icon={faStar} color={star > task.priority ? '#D9D9D9' : task.priority === 3 ? '#DF9620' : task.priority < 3 ? '#DB4837' : '#15A217'} />
-                                                </View>
-                                            )
-                                        })}
+                {
+                    tasks.map(task => (
+                        <TouchableOpacity className='my-2' key={task.id} onPress={() => {
+                            setTask(task);
+                            bottomSheetRef.current?.expand();
+                        }} activeOpacity={0.7}>
+                            <View className='bg-[#F2F2F2] mb-3 p-6 rounded-[28px] flex-row items-start gap-2 border-b-2 border-[#DBBEBE]'>
+                                <TouchableOpacity className='mt-4' onPress={() => onSelectTask(task)}>
+                                    <View className='bg-[#BDBDBD] items-center justify-center w-5 h-5 rounded-full mt-2'>
+                                    </View>
+                                </TouchableOpacity>
+                                <View>
+                                    <Text className='text-lg text-[#464242] font-semibold'>{task.name}</Text>
+                                    <Text className='text-sm text-[#8C8080] '>{task.description}</Text>
+                                    <Text className='text-sm text-[#8C8080]'>{format(task.dueDate, 'MMMM d, yyyy hh:mm')}</Text>
+                                    <View className='mt-2'>
+                                        <View className='flex-row gap-1'>
+                                            {starsArray.map((star, index) => {
+                                                return (
+                                                    <View key={index}>
+                                                        <FontAwesomeIcon size={20} icon={faStar} color={star > task.priority ? '#D9D9D9' : task.priority === 3 ? '#DF9620' : task.priority < 3 ? '#DB4837' : '#15A217'} />
+                                                    </View>
+                                                )
+                                            })}
+                                        </View>
                                     </View>
                                 </View>
                             </View>
-                        </View>
-                    </TouchableOpacity>
-                ))}
+                        </TouchableOpacity>
+                    ))
+                }
             </ScrollView>
             <TouchableOpacity className='mt-4' onPress={openBottomSheet} activeOpacity={0.7}>
                 <View className='bg-[#26252C] mb-3 p-6 flex-row justify-between items-center rounded-[18px]'>
@@ -109,7 +99,7 @@ const TasksList = ({ bottomSheetRef, tasks, setTask }) => {
                         <TouchableOpacity onPress={onCancelTaskComplete} activeOpacity={0.7} className='h-7 w-24 mr-1 items-center justify-center border-[1px] border-[#26252C] rounded-md'>
                             <Text className='text-[#26252C] font-medium text-center'>No</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={handleAnimationStart} activeOpacity={0.7} className='h-7 w-24 items-center justify-center bg-[#26252C] rounded-md'>
+                        <TouchableOpacity onPress={onCompleteTask} activeOpacity={0.7} className='h-7 w-24 items-center justify-center bg-[#26252C] rounded-md'>
                             <Text className='font-medium text-center text-white'>Yes</Text>
                         </TouchableOpacity>
                     </View>
@@ -123,7 +113,10 @@ const TasksList = ({ bottomSheetRef, tasks, setTask }) => {
 
 const enhance = withObservables([], () => {
     return {
-        tasks: database.get('tasks').query(Q.sortBy('priority', Q.desc)).observe()
+        tasks: database.get('tasks').query(
+            Q.sortBy('priority', Q.desc),
+            Q.sortBy('due_date', Q.asc)
+        ).observeWithColumns(['name', 'description', 'due_date', 'priority'])
     }
 });
 
