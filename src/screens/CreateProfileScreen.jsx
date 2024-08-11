@@ -1,10 +1,9 @@
-import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import database from '../watermellon.config';
 import logoImg from '../assets/logo.png'
 import { TextInputField, NumberInputField, DateInputField, PhoneInputField } from '../components/FormFields';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
-import { set } from 'date-fns';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const CreateProfileScreen = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -20,15 +19,11 @@ const CreateProfileScreen = ({ navigation }) => {
   const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(true);
 
   const saveUser = async () => {
-    if (name.length === 0) {
-      setIsNameValid(false);
-    } if (profession.length === 0) {
-      setIsProfessionValid(false);
-    } if (phoneNumber.length === 0 || cca2.length === 0) {
-      setIsPhoneNumberValid(false);
-    } if (dob.length === 0) {
-      setIsDobValid(false);
-    }
+    if (name.length === 0) setIsNameValid(false);
+    if (profession.length === 0) setIsProfessionValid(false);
+    if (phoneNumber.length === 0 || cca2.length === 0) setIsPhoneNumberValid(false);
+    if (dob.length === 0) setIsDobValid(false);
+
     if (name.length === 0 || profession.length === 0 || phoneNumber.length === 0 || dob.length === 0 || cca2.length === 0) {
       return;
     }
@@ -48,19 +43,10 @@ const CreateProfileScreen = ({ navigation }) => {
         .then(() => navigation.replace('Bottom Tab'))
         .catch(err => {
           console.log(name, profession, phoneNumber, selectedCountry.cca2, dob);
-          console.log(err)
+          console.log(err);
         });
     });
   };
-
-  function handleSelectedCountry(country) {
-    setSelectedCountry(country);
-  }
-
-  function handleInputValue(phoneNumber) {
-    setPhoneInput(phoneNumber);
-  }
-
 
   return (
     <View className='justify-end flex-1 bg-[#242424]'>
@@ -68,13 +54,30 @@ const CreateProfileScreen = ({ navigation }) => {
         <Image className='mb-10' source={logoImg} />
       </View>
       <View className='w-full h-[65%] pt-10 bg-white'>
-        <ScrollView className='px-12'>
+        <KeyboardAwareScrollView
+          className='flex-1 px-12'
+          enableOnAndroid={true}
+          keyboardShouldPersistTaps="handled"
+          extraScrollHeight={10}
+        >
           <View className='w-full gap-4'>
             <Text className='mb-4 text-3xl font-bold text-black'>Create Profile</Text>
             <View className='w-full'>
               <TextInputField isValid={isNameValid} setIsValid={setIsNameValid} value={name} setValue={setName} name='Name' />
               <TextInputField isValid={isProfessionValid} setIsValid={setIsProfessionValid} value={profession} setValue={setProfession} name='Profession' />
-              <PhoneInputField isDarkTheme={false} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} isPhoneNumberValid={isPhoneNumberValid} setIsPhoneNumberValid={setIsPhoneNumberValid} cca2={cca2} setCca2={setCca2} callingCode={callingCode} setCallingCode={setCallingCode} />
+              <PhoneInputField
+                isDarkTheme={false}
+                selectedCountry={selectedCountry}
+                setSelectedCountry={setSelectedCountry}
+                phoneNumber={phoneNumber}
+                setPhoneNumber={setPhoneNumber}
+                isPhoneNumberValid={isPhoneNumberValid}
+                setIsPhoneNumberValid={setIsPhoneNumberValid}
+                cca2={cca2}
+                setCca2={setCca2}
+                callingCode={callingCode}
+                setCallingCode={setCallingCode}
+              />
               <DateInputField value={dob} setValue={setDob} isValid={isDobValid} setIsValid={setIsDobValid} name='Date of birth' />
             </View>
             <View className='w-full'>
@@ -83,10 +86,10 @@ const CreateProfileScreen = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           </View>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </View>
     </View>
-  )
+  );
 }
 
-export default CreateProfileScreen
+export default CreateProfileScreen;
