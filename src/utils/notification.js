@@ -1,5 +1,6 @@
 import notifee, { TimestampTrigger, TriggerType } from '@notifee/react-native';
 import { getRandomMessage } from './messages';
+import { format } from 'date-fns';
 
 export async function cancelNotification(id) {
     console.log(id);
@@ -64,7 +65,7 @@ export async function scheduleEventNotification(notificationId, eventName, event
         {
             id: notificationId,
             title: 'Reminder!',
-            body: `Event ${eventName} is tomorrow!`,
+            body: `Event ${eventName} is on ${format(eventDateObj, 'dd/MM/yyyy')}`,
             android: {
                 channelId,
                 pressAction: {
@@ -102,7 +103,7 @@ export const updateEventNotification = (id, eventName, eventDate) => {
         {
             id: `${id}`,
             title: 'Reminder!',
-            body: `Event ${eventName} is tomorrow!`,
+            body: `Event ${eventName} is on ${format(eventDateObj, 'dd/MM/yyyy')}`,
             android: {
                 channelId: 'default',
                 pressAction: {
@@ -201,5 +202,5 @@ export const updateTaskNotification = (id, body, taskDate) => {
 }
 
 export const scheduleNotification = async (id, name, startDate) => {
-    
+
 }

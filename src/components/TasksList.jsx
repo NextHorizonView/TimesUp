@@ -48,7 +48,7 @@ const TasksList = ({ bottomSheetRef, tasks, setTask }) => {
     }
 
     return (
-        <View className='flex-1 pt-6 pb-5 bg-white px-7 rounded-t-2xl'>
+        <View className='flex-1 pt-6 bg-white px-7 rounded-t-2xl'>
             <Text className='text-lg font-bold text-black'>Today's Task</Text>
             <ScrollView showsVerticalScrollIndicator={false}>
                 {
