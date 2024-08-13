@@ -51,7 +51,7 @@ const ScheduleList = ({ setSchedule, bottomSheetRef, schedules }) => {
 
     return (
         <View className='flex-1 pt-6 bg-white px-7 rounded-t-2xl'>
-            <Text className='text-lg font-bold text-black'>Today's Schedule</Text>
+            <Text className='text-lg font-bold text-black'>Your Schedule</Text>
             <ScrollView showsVerticalScrollIndicator={false}>
                 {
                     schedules.map(schedule => (

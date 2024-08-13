@@ -78,7 +78,7 @@ const CreateProfileScreen = ({ navigation }) => {
                 callingCode={callingCode}
                 setCallingCode={setCallingCode}
               />
-              <DateInputField value={dob} setValue={setDob} isValid={isDobValid} setIsValid={setIsDobValid} name='Date of birth' />
+              <DateInputField value={dob} setValue={setDob} isValid={isDobValid} setIsValid={setIsDobValid} name='Date of birth' maxDate={new Date()} />
             </View>
             <View className='w-full'>
               <TouchableOpacity onPress={saveUser} className='w-full p-3 rounded-md my-10 bg-[#424242] items-center'>

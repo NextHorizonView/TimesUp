@@ -84,11 +84,11 @@ export const DateInputField = ({ value, setValue, name, isValid, setIsValid, isD
 
 export const DateTimeInputField = ({ value, setValue, name, isValid, setIsValid, isDarkTheme, maxDate, minDate }) => {
     const [openDate, setOpenDate] = useState(false);
-
+    console.log(value);
     return (
         <View className='w-full'>
             <DatePicker
-                mode="time"
+                mode="datetime"
                 modal
                 open={openDate}
                 date={value || new Date()}
@@ -102,6 +102,8 @@ export const DateTimeInputField = ({ value, setValue, name, isValid, setIsValid,
                 onCancel={() => {
                     setOpenDate(false);
                 }}
+                maximumDate={maxDate || ''}
+                minimumDate={minDate || ''}
             />
             <Text className='text-sm font-medium' style={{ color: isDarkTheme ? '#BDBDBD' : 'black' }}>{name}</Text>
             <View style={{ borderColor: !isValid ? '#dc2626' : `${isDarkTheme ? '#BDBDBD' : 'black'}`, color: isDarkTheme ? '#ffffff' : 'black' }} className='border-[1px] text-sm  rounded-xl flex-row justify-between p-3'>

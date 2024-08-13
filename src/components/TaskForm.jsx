@@ -12,7 +12,7 @@ const TaskForm = ({ task, bottomSheetRef }) => {
     const [description, setDescription] = useState('');
     const [isDescriptionValid, setIsDescriptionValid] = useState(true);
     const [priority, setPriority] = useState(1);
-    const [dueDate, setDueDate] = useState(new Date());
+    const [dueDate, setDueDate] = useState(null);
     const [isDueDateValid, setIsDueDateValid] = useState(true);
 
     useEffect(() => {
