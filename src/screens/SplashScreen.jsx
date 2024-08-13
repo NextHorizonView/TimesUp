@@ -7,21 +7,21 @@ import logoImg from '../assets/logo.png';
 const SplashScreen = ({navigation}) => {
   const imageOpacity = useRef(new Animated.Value(0)).current;
 
-  const handleAnimationFinish = async () => {
-    Animated.timing(imageOpacity, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start(async () => {
-      const user = await database.get('profile').query().fetch();
-      if (user.length === 0) {
-        navigation.replace('Create Profile');
-      } else {
-        navigation.replace('Create Profile');
-        // navigation.replace('Bottom Tab');
-      }
-    });
-  };
+    const handleAnimationFinish = async () => {
+        Animated.timing(imageOpacity, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+        }).start(async () => {
+            const user = await database.get('profile').query().fetch();
+            if (user.length === 0) {
+                navigation.replace('Create Profile');
+            } else {
+                navigation.replace('Bottom Tab');
+            }
+        });
+    };
+
 
   useEffect(() => {
     handleAnimationFinish();
