@@ -84,7 +84,6 @@ export const DateInputField = ({ value, setValue, name, isValid, setIsValid, isD
 
 export const DateTimeInputField = ({ value, setValue, name, isValid, setIsValid, isDarkTheme, maxDate, minDate }) => {
     const [openDate, setOpenDate] = useState(false);
-    console.log(value);
     return (
         <View className='w-full'>
             <DatePicker

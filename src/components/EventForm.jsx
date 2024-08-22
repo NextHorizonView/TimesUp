@@ -91,7 +91,6 @@ const EventForm = ({ event, bottomSheetRef, selectedDate }) => {
                     setDescription('');
                     setIsNameValid(true);
                     setIsDescriptionValid(true);
-                    console.log(event.id);
                 })
                 .catch(err => console.log(err));
         });

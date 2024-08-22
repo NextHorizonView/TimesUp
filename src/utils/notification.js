@@ -121,34 +121,40 @@ export const updateEventNotification = (id, eventName, eventDate) => {
 export async function scheduleTaskNotification(notificationId, body, taskDate) {
     console.log(notificationId);
     await notifee.requestPermission();
+
     const taskDateObj = new Date(taskDate);
     taskDateObj.setHours(0, 0, 0, 0); // Normalize the date
 
-    // Calculate the trigger date (one day before the event)
-    const triggerDate = new Date(taskDateObj);
-    triggerDate.setMinutes(triggerDate.getMinutes() - 5);
-
-    // If the event is less than one day away, notify instantaneously
-    if (triggerDate < new Date()) {
-        triggerDate.setTime(Date.now() + 30000);
-    }
-
-    console.log(triggerDate);
-    // Create a timestamp trigger
-    const trigger = {
-        type: TriggerType.TIMESTAMP,
-        timestamp: triggerDate.getTime(),
+    // Create a function to calculate trigger time
+    const getTriggerTime = (minutesBefore) => {
+        const triggerDate = new Date(taskDate);
+        triggerDate.setMinutes(triggerDate.getMinutes() - minutesBefore);
+        if (triggerDate < new Date()) {
+            triggerDate.setTime(Date.now() + 30000);
+        }
+        return triggerDate.getTime();
     };
+
+    const trigger5Mins = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: getTriggerTime(5),
+    };
+
+    const trigger30Mins = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: getTriggerTime(30),
+    };
+
     const channelId = await notifee.createChannel({
         id: 'default',
         name: 'Default Channel',
     });
 
-    // Schedule the notification
+    // Schedule the 30 minutes before notification
     await notifee.createTriggerNotification(
         {
-            id: notificationId,
-            title: 'Reminder!',
+            id: `${notificationId}-30min`,
+            title: 'Reminder! 30 minutes before',
             body: body,
             android: {
                 channelId,
@@ -157,36 +163,56 @@ export async function scheduleTaskNotification(notificationId, body, taskDate) {
                 },
             },
         },
-        trigger,
+        trigger30Mins,
     );
 
-    console.log(`Notification scheduled with ID: ${notificationId}`);
+    // Schedule the 5 minutes before notification
+    await notifee.createTriggerNotification(
+        {
+            id: `${notificationId}-5min`,
+            title: 'Reminder! 5 minutes before',
+            body: body,
+            android: {
+                channelId,
+                pressAction: {
+                    id: 'default',
+                },
+            },
+        },
+        trigger5Mins,
+    );
+
+    console.log(`Notifications scheduled with ID: ${notificationId}`);
 }
 
-export const updateTaskNotification = (id, body, taskDate) => {
+export const updateTaskNotification = async (id, body, taskDate) => {
     const taskDateObj = new Date(taskDate);
     taskDateObj.setHours(0, 0, 0, 0); // Normalize the date
 
-    // Calculate the trigger date (one day before the event)
-    const triggerDate = new Date(taskDateObj);
-    triggerDate.setMinutes(triggerDate.getMinutes() - 5);
-
-    // If the event is less than one day away, notify instantaneously
-    if (triggerDate < new Date()) {
-        triggerDate.setTime(Date.now() + 30000);
-    }
-
-    // Create a timestamp trigger
-    const trigger = {
-        type: TriggerType.TIMESTAMP,
-        timestamp: triggerDate.getTime(),
+    const getTriggerTime = (minutesBefore) => {
+        const triggerDate = new Date(taskDate);
+        triggerDate.setMinutes(triggerDate.getMinutes() - minutesBefore);
+        if (triggerDate < new Date()) {
+            triggerDate.setTime(Date.now() + 30000);
+        }
+        return triggerDate.getTime();
     };
 
-    // Schedule the notification
-    notifee.createTriggerNotification(
+    const trigger5Mins = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: getTriggerTime(5),
+    };
+
+    const trigger30Mins = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: getTriggerTime(30),
+    };
+
+    // Update the 30 minutes before notification
+    await notifee.createTriggerNotification(
         {
-            id: id,
-            title: 'Reminder!',
+            id: `${id}-30min`,
+            title: 'Reminder! 30 minutes before',
             body: body,
             android: {
                 channelId: 'default',
@@ -195,12 +221,24 @@ export const updateTaskNotification = (id, body, taskDate) => {
                 },
             },
         },
-        trigger,
+        trigger30Mins,
     );
 
-    console.log(`Notification updated with ID: ${id}`);
-}
+    // Update the 5 minutes before notification
+    await notifee.createTriggerNotification(
+        {
+            id: `${id}-5min`,
+            title: 'Reminder! 5 minutes before',
+            body: body,
+            android: {
+                channelId: 'default',
+                pressAction: {
+                    id: 'default',
+                },
+            },
+        },
+        trigger5Mins,
+    );
 
-export const scheduleNotification = async (id, name, startDate) => {
-
-}
+    console.log(`Notifications updated with ID: ${id}`);
+};

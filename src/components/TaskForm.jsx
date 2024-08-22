@@ -93,7 +93,8 @@ const TaskForm = ({ task, bottomSheetRef }) => {
                     setName('');
                     setDescription('');
                     setPriority(1);
-                    cancelNotification(task.id);
+                    cancelNotification(`${task.id}-5min`);
+                    cancelNotification(`${task.id}-30min`);
                 })
                 .catch(err => console.log(err));
         });

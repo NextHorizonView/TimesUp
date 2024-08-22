@@ -113,7 +113,8 @@ const ScheduleForm = ({ schedule, setSchedule, bottomSheetRef }) => {
                     setStartTime('');
                     setEndTime('');
                     setIsNameValid(true);
-                    cancelNotification(schedule.id);
+                    cancelNotification(`${schedule.id}-5min`);
+                    cancelNotification(`${schedule.id}-30min`);
 
                 })
                 .catch(err => console.log(err));
