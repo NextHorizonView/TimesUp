@@ -154,7 +154,7 @@ export async function scheduleTaskNotification(notificationId, body, taskDate) {
     await notifee.createTriggerNotification(
         {
             id: `${notificationId}-30min`,
-            title: 'Reminder! 30 minutes before',
+            title: 'Reminder!',
             body: body,
             android: {
                 channelId,
@@ -170,7 +170,7 @@ export async function scheduleTaskNotification(notificationId, body, taskDate) {
     await notifee.createTriggerNotification(
         {
             id: `${notificationId}-5min`,
-            title: 'Reminder! 5 minutes before',
+            title: 'Reminder!',
             body: body,
             android: {
                 channelId,
@@ -212,7 +212,7 @@ export const updateTaskNotification = async (id, body, taskDate) => {
     await notifee.createTriggerNotification(
         {
             id: `${id}-30min`,
-            title: 'Reminder! 30 minutes before',
+            title: 'Reminder!',
             body: body,
             android: {
                 channelId: 'default',
@@ -228,7 +228,7 @@ export const updateTaskNotification = async (id, body, taskDate) => {
     await notifee.createTriggerNotification(
         {
             id: `${id}-5min`,
-            title: 'Reminder! 5 minutes before',
+            title: 'Reminder!',
             body: body,
             android: {
                 channelId: 'default',
