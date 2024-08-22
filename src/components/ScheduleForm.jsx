@@ -127,7 +127,7 @@ const ScheduleForm = ({ schedule, setSchedule, bottomSheetRef }) => {
             <View className='justify-between flex-1 gap-4 mt-4'>
                 <View className='gap-2'>
                     <TextInputField name='Schedule Name' value={name} setValue={setName} isValid={isNameValid} setIsValid={setIsNameValid} />
-                    <DateInputField name='Schedule Date' value={date} setValue={setDate} isValid={isDateValid} setIsValid={setIsDateValid} />
+                    <DateInputField name='Schedule Date' value={date} setValue={setDate} isValid={isDateValid} setIsValid={setIsDateValid} minDate={new Date()} />
                     <TimeInputField name='Start Time' value={startTime} setValue={setStartTime} isValid={isStartTimeValid} setIsValid={setIsStartTimeValid} />
                     <TimeInputField minTime={startTime} name='End Time' value={endTime} setValue={setEndTime} isValid={isEndTimeValid} setIsValid={setIsEndTimeValid} />
                 </View>
