@@ -24,14 +24,8 @@ const EditProfileScreen = ({ user, navigation }) => {
     const saveUser = async () => {
         if (name.length === 0) {
             setIsNameValid(false);
-        } if (profession.length === 0) {
-            setIsProfessionValid(false);
-        } if (phoneNumber.length === 0) {
-            setIsPhoneNumberValid(false);
-        } if (dob.length === 0) {
-            setIsDobValid(false);
         }
-        if (name.length === 0 || profession.length === 0 || phoneNumber.length === 0 || dob.length === 0) {
+        if (name.length === 0) {
             return;
         }
 

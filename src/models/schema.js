@@ -11,7 +11,7 @@ export default appSchema({
                 { name: 'profession', type: 'string' },
                 { name: 'phone_number', type: 'string' },
                 { name: 'country_code', type: 'string' },
-                { name: 'dob', type: 'number' },
+                { name: 'dob', type: 'number', isOptional: true },
             ]
         }),
         tableSchema({
